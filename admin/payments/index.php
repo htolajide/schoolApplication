@@ -1,6 +1,6 @@
 <?php  
 error_reporting( E_ALL );
-ini_set( "display_errors", 1 );
+//ini_set( "display_errors", 1 );
 include_once '../../includes/magicquotes.inc.php';
 require_once  '../../includes/access.inc.php';
 
@@ -33,8 +33,8 @@ try
   }
   catch (PDOException $e)
   {
-      $error = 'Error searching for user name.';
-    //include 'error.html.php';
+    $error = 'Error searching for user name.';
+	include 'error.html.php';
     exit();
   }
   $_SESSION['teacher'] = $row['name'];
@@ -50,6 +50,7 @@ try
 						$welcome = 'Good Evening';
 					}
 				$greeting = $welcome.', '.explode(" ", $_SESSION['teacher'])[0];
+				$_SESSION['date'] = date('Y-m-d');
 				
 // add class
 if (isset($_POST['action']) and $_POST['action'] == 'Submit')
@@ -93,10 +94,10 @@ if (isset($_POST['action']) and $_POST['action'] == 'Submit')
     include 'error.html.php';
     exit();
   }
-   $message= 'Payment Type successfully Added';
+  $message= 'Payment Type successfully Added';
   $link='.';
   include 'success.html.php';
-  //exit();
+  exit();
 }
 
 // make changes to the expenses
@@ -159,7 +160,7 @@ if(isset($_GET['updateform'])){
   $message = 'Change Successfully Added';
   $link = '?expensesdetail';
   include 'success.html.php';
-  //exit();
+  exit();
 }
 
 if (isset($_POST['action']) and $_POST['action'] == 'Print')
@@ -404,7 +405,7 @@ if (isset($_GET['paymentform']))
   $message = 'Payment is Successful';
   $link = '.';
   include 'success.html.php';
-  //exit();
+  exit();
 }
 
 // See Report
@@ -421,7 +422,8 @@ if (isset($_POST['action']) and $_POST['action'] == 'Payment Summary')
   }catch (PDOException $e){ 
   $error = 'Error fetching users details.'.$e;
   include 'error.html.php';
-  exit(); }
+  exit(); 
+  }
   $row = $s->fetch();
   $surname = $row['surname'];
   $firstname = $row['firstname'];
@@ -891,11 +893,11 @@ foreach ($s as $row)
     include 'error.html.php';
     exit();
   }
-  //header('Location: .');
+  // header('Location: .');
   $message = 'Pay Type is Successfully Added';
   $link = '?paytype';
   include 'success.html.php';
-  //exit();
+  exit();
 	
 }
 
@@ -1000,7 +1002,7 @@ foreach ($s as $row)
   $message = 'Change is Successful';
   $link = '?paytype';
   include 'success.html.php';
-  //exit();
+  exit();
 	
 }
 
@@ -1224,6 +1226,55 @@ if (isset($_GET['deletedpayments']))
 	
 }
 
+// get expenses for other days
+  if (isset($_POST['action']) and $_POST['action'] == 'Load Expenses')
+{
+	include '../../includes/db.inc.php';
+	if (isset($_POST['edate']) && $_POST['edate'] ==''){
+		$error = 'Please Enter Date';
+		include 'error.html.php';
+	}
+	$_SESSION['date'] = $_POST['edate'];
+	try
+  {
+    $sql = 'SELECT id, beneficiary, purpose, amount, date FROM expenses where date=:date';
+    $s = $pdo->prepare($sql);
+	$s->bindValue(':date', $_SESSION['date']);
+    $s->execute();
+  }
+  catch (PDOException $e)
+  {
+    $error = 'Error getting expenses'.$e;
+    include 'error.html.php';
+    exit();
+  }
+  foreach($s as $row){
+	$expenses[] = array('id'=>$row['id'],'beneficiary'=>$row['beneficiary'],'purpose'=>$row['purpose'],'date'=>$row['date'],'amount'=>$row['amount']);  
+  }
+  
+  try
+  {
+    $sql = 'SELECT sum(amount)as expensestotal  FROM expenses where date=:date';
+    $s = $pdo->prepare($sql);
+	$s->bindValue(':date', $_SESSION['date']);
+    $s->execute();
+	$row = $s->fetch();
+	$expensestotal = $row['expensestotal'];
+  }
+  catch (PDOException $e)
+  {
+    $error = 'Error getting expenses'.$e;
+    include 'error.html.php';
+    exit();
+  }
+  
+  $pageheader = 'Expenses on '.$_SESSION['date'];
+  $search = 'Load Expenses';
+  include 'expensesdetail.html.php';
+  exit();
+		
+	}
+	
 //Do correction on a payment
 if (isset($_POST['action']) and $_POST['action'] == 'Correction')
 {
@@ -1427,9 +1478,10 @@ if (isset($_POST['action']) and $_POST['action'] == 'Correction')
       'selected' => in_array($row['id'], $selectedType));
   }
 
- include 'form.html.php';
+  include 'form.html.php';
   exit();
 }
+
 //load correction to database
 if(isset($_GET['correctionform'])){
 	include '../../includes/db.inc.php';
@@ -1468,7 +1520,7 @@ if(isset($_GET['correctionform'])){
   $message = 'Correction is Successful';
   $link = '?todaypayments';
   include 'success.html.php';
-  //exit();
+  exit();
 }
 
 //Load Expenses form 
@@ -1512,7 +1564,7 @@ if(isset($_GET['expensesform'])){
   $message = 'Expenses Successfully Added';
   $link = '?expenses';
   include 'success.html.php';
-  //exit();
+  exit();
 }
 
 // load expenses detail
@@ -1596,7 +1648,7 @@ if(isset($_GET['expensesdetail'])){
   $message= 'Restore successful'; 
   $link='?paytypes';  
   include 'success.html.php';  
-  //exit();
+  exit();
 	   
    }
   }
@@ -1621,7 +1673,7 @@ if(isset($_GET['expensesdetail'])){
   $message= 'Delete Successful'; 
   $link='?paytypes';  
   include 'success.html.php';  
-  //exit();
+  exit();
   }
   // delete a payment type
   if (isset($_POST['action']) and $_POST['action'] == 'Delete Payment')
@@ -1642,56 +1694,9 @@ if(isset($_GET['expensesdetail'])){
   $message= 'Delete Successful'; 
   $link='?todaypayments';  
   include 'success.html.php';  
-  //exit();
-  }
-  // get expenses for other days
-  if (isset($_POST['action']) and $_POST['action'] == 'Load Expenses')
-{
-	include '../../includes/db.inc.php';
-	if (isset($_POST['edate']) && $_POST['edate'] ==''){
-		$error = 'Please Enter Date';
-		include 'error.html.php';
-	}
-	$_SESSION['date'] = $_POST['edate'];
-	try
-  {
-    $sql = 'SELECT id, beneficiary, purpose, amount, date FROM expenses where date=:date';
-    $s = $pdo->prepare($sql);
-	$s->bindValue(':date', $_SESSION['date']);
-    $s->execute();
-  }
-  catch (PDOException $e)
-  {
-    $error = 'Error getting expenses'.$e;
-    include 'error.html.php';
-    exit();
-  }
-  foreach($s as $row){
-	$expenses[] = array('id'=>$row['id'],'beneficiary'=>$row['beneficiary'],'purpose'=>$row['purpose'],'date'=>$row['date'],'amount'=>$row['amount']);  
-  }
-  
-  try
-  {
-    $sql = 'SELECT sum(amount)as expensestotal  FROM expenses where date=:date';
-    $s = $pdo->prepare($sql);
-	$s->bindValue(':date', $_SESSION['date']);
-    $s->execute();
-	$row = $s->fetch();
-	$expensestotal = $row['expensestotal'];
-  }
-  catch (PDOException $e)
-  {
-    $error = 'Error getting expenses'.$e;
-    include 'error.html.php';
-    exit();
-  }
-  
-  $pageheader = 'Expenses on '.$_SESSION['date'];
-  $search = 'Search Expenses';
-  include 'expensesdetail.html.php';
   exit();
-		
-	}
+  }
+  
   // get payments for previous days
  if (isset($_POST['action']) and $_POST['action'] == 'Load Payments')
 {
@@ -2128,8 +2133,7 @@ if (isset($_GET['paytypes']))
 	}else{
 		$error = 'Make sure you have load students for the current term or the term you wish to work with.';   
 		include 'error.html.php';    
-		exit();  
-		
+		exit();  	
 	}
 	}
 
@@ -2333,7 +2337,6 @@ if (isset($_GET['paytypes']))
     include 'error.html.php';
     exit();
   }
-
   foreach ($s as $row)
   {
     $nboys = $row['nboys'];
@@ -2349,13 +2352,10 @@ if (isset($_GET['paytypes']))
     include 'error.html.php';
     exit();
   }
-
   foreach ($result as $row)
   {
     $ntotal = $row['ntotal'];
   }
- 
- 
  try {  
 	$result = $pdo->query('SELECT student.id as id, regnumber, surname, firstname, othername, parentphone, gender, class.name as class, session.name as session, 
 	term.name as term  FROM student inner join class on class.id = classid inner join session on session.id = sessionid inner join term 
@@ -2373,11 +2373,119 @@ if (isset($_GET['paytypes']))
 		include 'students.html.php';
 		exit();
 	}
+// print list of payment summary
+	if(isset($_GET['paymentsummary'])){
+		include  '../../includes/db.inc.php';
+ 
+		if(isset($_SESSION['theclass']) && isset($_SESSION['thesession']) && isset($_SESSION['theterm'])){
+			$theclass = $_SESSION['theclass'];
+			$thesession = $_SESSION['thesession'];
+			$theterm = $_SESSION['theterm']; 
+		}else{
+			$theclass = $_SESSION['class'];
+			$thesession = 1;
+			$theterm = 1;
+ }
+		try {  
+	$result = $pdo->query('SELECT sum(payment.amount) as amountpaid, payment.date as date, student.regnumber, surname, firstname, othername 
+	FROM payment inner join student 
+	on payment.studentid = student.id WHERE payment.classid ='.$theclass.' AND payment.termid ='.$theterm.' AND payment.sessionid = '.$thesession.' 
+	AND  student.deleted = 0 group by payment.regnumber');
+	}
+	catch (PDOException $e) { 
+		$error = 'Error fetching payments from the database!'.$e;  
+		include 'error.html.php';   
+		exit(); 
+		}
+		foreach ($result as $row) {  
+		$payments[] = array('amountpaid' => $row['amountpaid'], 'date' => $row['date'], 'regnumber' => $row['regnumber'],'surname' => $row['surname'],'firstname' => $row['firstname'], 'othername' => $row['othername']);
+		}
+	//get total amount due
+  try
+  {
+    $result = $pdo->query('SELECT sum(amount) as amountdue FROM pay WHERE classid='.$_SESSION['theclass']);
+  }
+  catch (PDOException $e)
+  {
+    $error = 'Error fetching number of students.';
+    include 'error.html.php';
+    exit();
+  }
+
+  foreach ($result as $row)
+  {
+    $amountdue = $row['amountdue'];
+  }
+		
+	//get total number of students
+  try
+  {
+    $result = $pdo->query('SELECT count(id) as ntotal FROM student WHERE classid='.$_SESSION['theclass'].' AND sessionid='.$_SESSION['thesession'].' AND termid='.$_SESSION['theterm']);
+  }
+  catch (PDOException $e)
+  {
+    $error = 'Error fetching number of students.';
+    include 'error.html.php';
+    exit();
+  }
+
+  foreach ($result as $row)
+  {
+    $ntotal = $row['ntotal'];
+  }
+  // get class name
+       try{
+	$sql = 'SELECT name FROM class WHERE id = :classid';
+    $s = $pdo->prepare($sql);
+    $s->bindValue(':classid', $theclass);
+    $s->execute();
+  }
+  catch (PDOException $e)
+  {
+    $error = 'Error fetching class.';
+    include 'error.html.php';
+    exit();
+  }
+   $row = $s->fetch();
+   $class = $row['name'];
+   
+   //get session
+    try{
+	$sql = 'SELECT name FROM session WHERE id = :sessionid';
+    $s = $pdo->prepare($sql);
+    $s->bindValue(':sessionid', $thesession);
+    $s->execute();
+  }
+  catch (PDOException $e)
+  {
+    $error = 'Error fetching session.';
+    include 'error.html.php';
+    exit();
+  }
+   $row = $s->fetch();
+   $session = $row['name'];
+   
+   //get term
+    try{
+ $sql = 'SELECT name FROM term WHERE id = :termid';
+    $s = $pdo->prepare($sql);
+    $s->bindValue(':termid', $theterm);
+    $s->execute();
+  }
+  catch (PDOException $e)
+  {
+    $error = 'Error fetching class.';
+    include 'error.html.php';
+    exit();
+  }
+   $row = $s->fetch();
+   $term = $row['name'];
+		include 'payment_summary_list.html.php';
+		exit();
+	}
 	
- // Display student list
- 
- include  '../../includes/db.inc.php';
- 
+ // Display student list 
+ include  '../../includes/db.inc.php'; 
  if(isset($_SESSION['theclass']) && isset($_SESSION['thesession']) && isset($_SESSION['theterm'])){
 	$theclass = $_SESSION['theclass'];
     $thesession = $_SESSION['thesession'];
@@ -2388,10 +2496,7 @@ if (isset($_GET['paytypes']))
 	$theterm = 1;
  }
  
-
- 
-  // Get list of class assigned to this student
- 
+  // Get list of class assigned to this student 
  try
   {
     $sql = 'SELECT id FROM class WHERE id = :id';
@@ -2413,8 +2518,7 @@ if (isset($_GET['paytypes']))
   }
 
 // Build the list of all class
-	
-  try
+ try
   {
     $result = $pdo->query('SELECT id, name FROM class order by name');
   }
@@ -2424,7 +2528,6 @@ if (isset($_GET['paytypes']))
     include 'error.html.php';
     exit();
   }
-
   foreach ($result as $row)
   {
     $classes[] = array(
@@ -2434,7 +2537,6 @@ if (isset($_GET['paytypes']))
   }
 
   // Get list of session assigned to this student
- 
  try
   {
     $sql = 'SELECT id FROM session WHERE id = :id';
@@ -2448,15 +2550,13 @@ if (isset($_GET['paytypes']))
     include 'error.html.php';
     exit();
   }
-  
   $selectedSession = array();
   foreach ($s as $row)
   {
     $selectedSession[] = $row['id'];
   }
 
-// Build the list of all Session
-	
+// Build the list of all Session	
   try
   {
     $result = $pdo->query('SELECT id, name FROM session order by name');
@@ -2467,7 +2567,6 @@ if (isset($_GET['paytypes']))
     include 'error.html.php';
     exit();
   }
-
   foreach ($result as $row)
   {
     $sessions[] = array(
@@ -2475,9 +2574,8 @@ if (isset($_GET['paytypes']))
       'name' => $row['name'],
       'selected' => in_array($row['id'], $selectedSession));
   }
-
+  
   // Get list of term assigned to this student
- 
  try
   {
     $sql = 'SELECT id FROM term WHERE id = :id';
@@ -2498,8 +2596,7 @@ if (isset($_GET['paytypes']))
     $selectedTerm[] = $row['id'];
   }
 
-// Build the list of all term
-	
+// Build the list of all term	
   try
   {
     $result = $pdo->query('SELECT id, name FROM term order by name');
@@ -2510,7 +2607,6 @@ if (isset($_GET['paytypes']))
     include 'error.html.php';
     exit();
   }
-
   foreach ($result as $row)
   {
     $terms[] = array(
@@ -2546,7 +2642,6 @@ if (isset($_GET['paytypes']))
 	$gender ="Female";
 	$sql = 'SELECT count(id) as ngirls FROM student WHERE  classid=:classid AND sessionid=:sessionid AND termid=:termid AND gender =:gender';
     $s = $pdo->prepare($sql);
-
 	$s->bindValue(':classid', $theclass);
 	$s->bindValue(':sessionid', $thesession);
 	$s->bindValue(':termid', $theterm);

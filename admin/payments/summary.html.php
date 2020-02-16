@@ -172,7 +172,7 @@ var number;
                 <?php else: ?>
 			<p>Your summary is empty!</p>
 		<?php endif; ?>
-		<H4><?php echo date('Y-m-d H:i:s', strtotime('-1 hour'));?></H4>
+		<H4><?php echo date('Y-m-d H:i:s');?></H4>
 	</div>	<!-- Print area -->
 	
   </div><!-- Container -->

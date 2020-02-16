@@ -2,25 +2,13 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Veroyori Homepage</title>
+        <title>Comrade Homepage</title>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width" />
         <link rel="stylesheet" href="css/reset.css" type="text/css" />
         <link rel="stylesheet" href="css/style.css" type="text/css" />
         <script src="js/jquery.js"></script> 
          <link rel="icon" href="images/favicon.ico">
-        <script type="text/javascript">
-            
-            var show_width = 1;
-            if(show_width == 1){
-                $(document).ready(function(){
-                    $(window).resize(function(){
-                        var screen_width = $(window).width();
-                        document.getElementById('screen_width').innerHTML = 'Window Width: ' +screen_width.toString();
-                    });   
-                });
-            }
-        </script>
     </head>
     <body>
         <div id="wrap">

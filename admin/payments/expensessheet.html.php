@@ -121,7 +121,7 @@ var number;
             <?php if (count($expenses) > 0): ?>
 			
                     <h4>Comrade Academy, Agbado, Ogun State <br>08062247210, 08162082226.</h4>
-					<h4>School Expense Sheet</h4>
+					<h4>School Expenses Slip</h4>
                <div class="pull-left">
                      <h5><?php echo ' Secretary: ';
                      htmlout($_SESSION['teacher']); ?></h5>   

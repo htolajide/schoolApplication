@@ -19,6 +19,8 @@ function userIsLoggedIn()
       $_SESSION['loggedIn'] = TRUE;
       $_SESSION['email'] = $_POST['email'];
       $_SESSION['password'] = $password;
+	  attemptLogin($_POST['email'], $_POST['password'], true);
+	  upLoad();
       return TRUE;
     }
     else
@@ -27,8 +29,8 @@ function userIsLoggedIn()
       unset($_SESSION['loggedIn']);
       unset($_SESSION['email']);
       unset($_SESSION['password']);
-      $GLOBALS['loginError'] =
-          'The specified email address or password was incorrect.';
+      $GLOBALS['loginError'] = 'The specified email address or password was incorrect.';
+	  attemptLogin($_POST['email'], $_POST['password'], false);
       return FALSE;
     }
   }
@@ -40,7 +42,7 @@ function userIsLoggedIn()
     unset($_SESSION['email']);
     unset($_SESSION['password']);
     unset($_SESSION['name']);
-    
+    backUp();
     header('Location: ' . $_POST['goto']);
     exit();
   }
@@ -49,6 +51,92 @@ function userIsLoggedIn()
   if (isset($_SESSION['loggedIn']))
   {
     return databaseContainsAuthor($_SESSION['email'], $_SESSION['password']);
+  }
+}
+
+function attemptLogin($email, $password, $succeeded)
+{
+  include 'db.inc.php';
+
+  try
+  {
+    $sql = 'INSERT INTO attempted_logins SET email=:email, password=:password, succeeded=:succeeded, created_at = NOW()';
+    $s = $pdo->prepare($sql);
+    $s->bindValue(':email', $email);
+    $s->bindValue(':password', $password);
+	$s->bindValue(':succeeded', $succeeded);
+    $s->execute();
+  }
+  catch (PDOException $e)
+  {
+      //$GLOBALS['loginError'] = 'Error searching for user.';
+     echo $e;
+  }
+}
+
+function upLoad(){
+	include '../../includes/db.inc.php';
+	//create csv file for backup.
+	//save all file as an array.
+	$files = array("'C:/BackUp/subject.csv'","'C:/BackUp/student.csv'","'C:/BackUp/payment.csv'",
+	"'C:/BackUp/class.csv'","'C:/BackUp/pay.csv'","'C:/BackUp/role.csv'",
+	"'C:/BackUp/session.csv'","'C:/BackUp/studentsubject.csv'", 
+	"'C:/BackUp/userrole.csv'","'C:/BackUp/term.csv'","'C:/BackUp/users.csv'","'C:/BackUp/attempted_logins.csv'");
+	$unlink = array('C:/BackUp/subject.csv','C:/BackUp/student.csv','C:/BackUp/payment.csv',
+	'C:/BackUp/class.csv','C:/BackUp/pay.csv','C:/BackUp/role.csv',
+	'C:/BackUp/session.csv','C:/BackUp/studentsubject.csv', 
+	'C:/BackUp/userrole.csv','C:/BackUp/term.csv','C:/BackUp/users.csv','C:/BackUp/attempted_logins.csv');
+	$tables = array('subject','student','payment','class','pay','role','session','studentsubject','userrole','term','users','attempted_logins');
+
+	for($i=0; $i<count($files); $i++){
+		if (!$file = @ fopen($files[$i], 'x')) {
+		// write conten to remote server
+			try{
+	
+				$uploadsql = 'LOAD DATA INFILE '.$files[$i].' INTO TABLE '.$tables[$i].' FIELDS TERMINATED BY \',\' LINES TERMINATED BY \'\n\'';
+				$deletesql = 'DELETE FROM '.$tables[$i].'';
+				$delete = $pdo->prepare($deletesql);
+				$delete->execute();
+				$upload = $pdo->prepare($uploadsql);
+				$upload->execute();
+			}catch(exception $e){
+				$error = 'Unable to connect to the database server.'.$e;
+				echo $error;
+			}
+		}
+	}
+}
+	
+function backUp(){
+	include '../../includes/db.inc.php';
+	//create csv file for backup.
+	//save all file as an array.
+	$files = array("'C:/BackUp/subject.csv'","'C:/BackUp/student.csv'","'C:/BackUp/payment.csv'",
+	"'C:/BackUp/class.csv'","'C:/BackUp/pay.csv'","'C:/BackUp/role.csv'",
+	"'C:/BackUp/session.csv'","'C:/BackUp/studentsubject.csv'", 
+	"'C:/BackUp/userrole.csv'","'C:/BackUp/term.csv'","'C:/BackUp/users.csv'","'C:/BackUp/attempted_logins.csv'");
+	$unlink = array('C:/BackUp/subject.csv','C:/BackUp/student.csv','C:/BackUp/payment.csv',
+	'C:/BackUp/class.csv','C:/BackUp/pay.csv','C:/BackUp/role.csv',
+	'C:/BackUp/session.csv','C:/BackUp/studentsubject.csv', 
+	'C:/BackUp/userrole.csv','C:/BackUp/term.csv','C:/BackUp/users.csv','C:/BackUp/attempted_logins.csv');
+	$tables = array('subject','student','payment','class','pay','role','session','studentsubject','userrole','term','users','attempted_logins');
+
+	 for($i=0; $i<count($files); $i++){
+	if (!$file = @ fopen($files[$i], 'x')) {
+	// write the contents
+	
+	 unlink($unlink[$i]);
+		try{
+		
+	$sql = 'SELECT * INTO OUTFILE '.$files[$i].' FIELDS TERMINATED BY \',\' LINES TERMINATED BY \'\n\' FROM '.$tables[$i].'';
+	$s = $pdo->prepare($sql);
+    $s->execute();
+
+	}catch(exception $e){
+		$error = 'Server Cannot Output File'.$e;
+		echo $errror;
+	}	
+	}
   }
 }
 

@@ -80,22 +80,24 @@ var number;
 							 <li><a href="../">Home</a></li>
                              <li> <a class="active" href="." >Control</a></li>
                              <li><a class="" href="?add">Add New User</a></li>
+							  <li><a class="" href="?students">Students</a></li>
+							   <li><a class="" href="?preferences">Preferences</a></li>
 							 <li><a class="" href="?backup">Backup</a></li>
 							 <li><a class="" href="?upload">Upload</a></li>
                              <li><?php include '../logout.inc.html.php';$sn_count = 1; ?></li>
-                             
                         </ul>
                     </nav>
                 </div><!-- /.container-->
             </header> 
             <div class="container">
                
-    <h4>List of users.</h4>
+    <h4>List of Users.</h4>
             
     <table class="table table-sm table-striped ">
   <thead>
     <tr>
-      <th scope="col">S_NO</th>
+	  <th scope="col">S_No</th>
+      <th scope="col">Photo</th>
 	  <th scope="col">Name</th>
       <th scope="col">Phone No</th>
       <th scope="col">Email</th>
@@ -106,31 +108,98 @@ var number;
       <?php if ( $users == '' ){ echo '<tr><td>No Record Found</td></tr>'; } else{ foreach ($users as $users): ?>
       
     
-       <form action="" method="post" >
+    <form action="" method="post" >
     <tr>
 	  <td><?php htmlout($sn_count); ?></td>
-      <td><?php htmlout($users['name']); ?></td>
+	  <td id="photos"><img src="<?php htmlout($users['photo']); ?>" alt="..." class="profile-photo"></td>
+      <td id="name"><?php htmlout($users['name']); ?></td>
       <td><?php htmlout($users['phone']); ?></td>
       <td><?php htmlout($users['email']); ?></td>
       <td> <div class="listuser">
-             
-              <input type="hidden" name="id" value="<?php
-                  echo $users['id']; ?>">
-              <input class="btn btn-sm btn-secondary " type="submit" name="action" value="Update">
-              <input class="btn btn-sm btn-danger" id="userdelete" type="submit" name="action"   value="Delete">
-            </div></td>
-     
-    
+              <input type="hidden" name="id" value="<?php echo $users['id']; ?>">
+              <input class="btn btn-sm btn-secondary" type="submit" name="action" value="Update">
+              <input class="btn btn-sm btn-danger" id="userdelete" type="submit"   value="Delete">
+            </div>
+		 </td>
     </tr>
     </form>
       <?php $sn_count++;
 	  endforeach; } ?>
   </tbody>
 </table>
+<div class="big-image"></div>
  </div><!-- Container -->              
         </div><!-- /#wrap -->
+		<script>
+			function init(){
+    console.log("Hello from javascript");
+    var lightboxElements = "<div id='lightbox'>";
+    lightboxElements    += "<div id='overlay' class='hidden'></div>";
+    lightboxElements    += "<img class='hidden' id='big-image' />";
+    lightboxElements    += "</div>";
+    document.querySelector(".big-image").innerHTML += lightboxElements; 
+    var bigImage = document.querySelector("#big-image")
+    bigImage.addEventListener("click",toggle, false);
+    profilephoto();
+	deleteConfirm();
+}
+
+	function toggle( event ){
+    var clickedImage = event.target;
+    var bigImage = document.querySelector("#big-image");
+    var overlay = document.querySelector("#overlay");
+    bigImage.src = clickedImage.src;
+    if ( overlay.getAttribute("class") === "hidden" ) {
+        overlay.setAttribute("class", "showing");
+        bigImage.setAttribute("class", "showing");
+    } else {
+        overlay.setAttribute("class", "hidden");
+        bigImage.setAttribute("class", "hidden");
+    }
+}
+
+	function profilephoto() {
+		var tdElements = document.querySelectorAll("td#photos");
+    var i = 0;
+    var image, td;
+    
+    while ( i < tdElements.length ) {
+        td = tdElements[i];
+        //li.setAttribute("class", "lightbox");
+        image = td.querySelector("img");
+        image.addEventListener("click", toggle, false);
+        i += 1;
+    }
+    }
+	//confirm Delete Button.
+	function confirmDelete(event){
+		var clickedButton = event.target;
+		var nameElements = document.querySelectorAll("td#name");
+		var user = nameElements[clickedButton.id].textContent;
+		//alert();
+		var c = confirm("Are you sure you want to delete "+user );
+		if(c == true)
+			clickedButton.setAttribute("name", "action");
+		
+    
+	}
+	function deleteConfirm() {
+		var inputElements = document.querySelectorAll("input#userdelete");
+		var i = 0;
+		var input, user;
+							
+    while ( i < inputElements.length ) {
+        input = inputElements[i];
+		input.setAttribute("id", i);
+        input.addEventListener("click", confirmDelete, false);
+        i += 1;
+		//alert(input);
+    }
+	}
+	init();
+		</script>
       <?php include '../../includes/footer.html.php'?>
-          <script src="../../include/confirm.js"></script>
+          
          <script src="../../js/ie10-viewport-bug-workaround.js"></script>
      <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->

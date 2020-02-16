@@ -15,8 +15,47 @@
 		WinPrint.document.write('<html><head>');
 		WinPrint.document.write('<link href="../../css/bootstrap.min.css" rel="stylesheet">');
 		WinPrint.document.write('<link rel="stylesheet" href="../../css/style.css" type="text/css" />');
-		WinPrint.document.write(' <link rel="stylesheet" href="../../css/reset.css" type="text/css" />');
 		WinPrint.document.write('</head><body onload="print();close();">');
+		WinPrint.document.write('<style type="text/css">' +
+        'table thead, tbody td {' +
+        'border:1px solid #000;' +
+        'padding;0.2em;' +
+		'font-size: 24px'+
+        '}' + 
+		'table tfoot {' +
+        'padding;0.2em;' +
+		'font-size: 24px'+
+        '}' + 
+		'body {' + 
+		'line-height:1.5em;' +
+		'font-size: 22px'+
+		'}' +
+		'table thead, legend, h4 { ' +
+		'font-weight: bold' +
+		'}' +
+		'legend {' +
+		'font-size: 32px' +
+		'marging-bottom: 5px' +
+		'}'+
+		'h4 {' +
+		'font-size: 38px'+
+		'marging-bottom: 5px' +
+		'}'+
+		'h5 {' +
+		'font-size: 38px'+
+		'font-weight: bold' +
+		'}'+
+		'div.result-photo { '+
+        'margin: auto 8.0em;'+
+		'float: left;'+
+		'}'+
+		'.report-upper{' +
+		'border-top:1px solid #000;' +
+		'}'+
+		'.report-lower{' +
+		'border-top:1px solid #000;' +
+		'}'+
+        '</style>');
 		WinPrint.document.write(prtContent.innerHTML);
 		WinPrint.document.write('</body></html>');
 		WinPrint.document.close();
@@ -96,11 +135,11 @@ var number;
             </header> 
             <div class="container">
             
-        <div id='printarea'>  
+        <div id='printarea'> 
+			<div class = "report-header">
             <?php  if (count($cart) > 0): ?>
-			
-                    <h4>Comrade Academy<br>
-                    10, Olaoluwa Street, Oluwo Bus Stop, Opelu, Ijoko Road, Agbado, Ogun State<br>
+			        <img id="logo" src="../../images/comradelogo.jpg" />
+                    <h4> 10, Olaoluwa Street, Oluwo Bus Stop, Opelu, Ijoko Road, Agbado, Ogun State.<br>
 					08062247210, 08162082226</h4>
 					<h4>Report Sheet For <?php htmlout($term.' '.$session); ?> Session</h4>
                <div class="pull-left">
@@ -111,21 +150,22 @@ var number;
                      htmlout($_SESSION['teacher']); ?></h5>
 					  <h5><?php echo 'Class: ';
                      htmlout($class); ?></h5>
-                    
                 </div>
+				<div class="result-photo">
+					<img src="<?php if ($photo == ""){htmlout('https://via.placeholder.com/150');}else{ htmlout($photo);} ?>" />
+				</div>
                 <div class="pull-right">
 				  <h5><?php echo 'Reg No: ';
                      htmlout($regnumber); ?></h5>
 					  <h5><?php echo 'Term: ';
                      htmlout($term); ?></h5>
-				 <h5><?php
-				  $today=new DateTime;
-                    echo 'Date: '.$date; ?></h5>
-                  
-                   
+				 <h5><?php echo 'Date: '.date('d-m-Y');?></h5>   
                </div>
-               
+			   </div>
+              <div class="report-upper">
+			   <legend>Cognitive Ability</legend>
                <table class="table table-sm table-striped ">
+			   
   <thead>
     <tr>
       <th colspan=5>Subject</th>
@@ -140,20 +180,20 @@ var number;
   <tfoot>
 <tr>
 <td>overall Total:</td>
-<td colspan=7 ></td>
-<td><?php echo $total; ?></td>
+	<td colspan=7 ></td>
+	<td><?php echo $total; ?></td>
 </tr>
 <tr>
-<td colspan=7 >Average:</td>
-<td></td>
-<td><?php echo $total/count($cart); ?></td>
+	<td colspan=7 >Average:</td>
+	<td></td>
+	<td><?php echo round($total/count($cart),2); ?></td>
 </tr>
 <tr>
 <tr>
-<td colspan=5>Number in Class:</td>
-<td></td>
-<td><?php htmlout($numberInClass); ?></td>
-<td>Position:</td>
+	<td >Number in Class:</td>
+	<td><?php htmlout($numberInClass); ?></td>
+	<td colspan=5></td>
+	<td>Position:</td>
 <td><?php 
 	if($position==0){
 		htmlout('No Position Yet');
@@ -181,18 +221,6 @@ var number;
 	}
 	?></td>
 </tr>
-<tr>
-<td colspan=2>Class Teacher's Comment:</td>
-<td colspan=5 ></td>
-<td>Sign:</td>
-<td></td>
-</tr>
-<tr>
-<td colspan=2>Principal's Comment:</td>
-<td colspan=5 ></td>
-<td>Sign:</td>
-<td></td>
-</tr>
 
 </tfoot>
   <tbody>
@@ -210,9 +238,89 @@ var number;
       <?php endforeach; ?>
          </tbody>
        </table>
+	   </div>
                 <?php else: ?>
 			<p>Your report is empty!</p>
 		<?php endif; ?>
+	<div class = "report-lower">
+		<div class = "lower-right">
+			<legend>Psychomonous Skills</legend>
+		<table class="table table-sm">
+  <thead>
+    <tr>
+      <td scope="col">S/No</td>
+	  <td scope="col">Title</td>
+	  <td scope="col">A</td>
+      <td scope="col">B</td>
+	  <td scope="col">C</td>
+	  <td scope="col">D</td>
+	  <td scope="col">E</td>  
+    </tr>
+  </thead>
+  <tbody>
+<?php $sn_count = 1 ?>
+   <?php for ($i = 0; $i < count($skills); $i++): ?>
+    <tr>
+	  <td><?php htmlout($sn_count); ?></td>
+	  <input type="hidden"  name = "skills[]" value="<?php htmlout($skills[$i]['id']); ?>" />
+      <td><?php htmlout($skills[$i]['title']); ?></td>
+      <?php for ($j = 1; $j < 6; $j++): ?>
+            <td><input type="checkbox" 
+              name="sgrades[]" id=grade<?php echo $j; ?> 
+			  value="<?php htmlout($j); ?>" <?php
+              if ($j == $sgrades[$i])
+              {
+                echo 'checked';
+              }
+              ?>></td> 
+			<?php endfor; ?>
+	</tr>
+  <?php $sn_count++; endfor; ?>
+         </tbody>
+       </table>
+			</div>
+			<div class = "lower-left">
+					<legend>Affective Disposition </legend>
+		<table class="table table-sm table-striped ">
+  <thead>
+    <tr>
+      <td scope="col">S/No</td>
+	  <td scope="col">Title</td>
+	  <td scope="col">A</td>
+      <td scope="col">B</td>
+	  <td scope="col">C</td>
+	  <td scope="col">D</td>
+	  <td scope="col">E</td>  
+    </tr>
+  </thead>
+  <tbody>
+   <?php for ($i = 0; $i < count($dispositions); $i++):  ?>
+    <tr>
+	  <td><?php htmlout($sn_count); ?></td>
+	  <input type="hidden" name = "dispositions[]" value="<?php htmlout($dispositions[$i]['id']); ?>" />
+      <td><?php htmlout($dispositions[$i]['title']); ?></td>
+      <?php for ($j = 1; $j < 6; $j++): ?>
+            <td><input type="checkbox" 
+              name="dgrades[]" id=grade<?php echo $j; ?> 
+			  value="<?php htmlout($j); ?>" <?php
+              if ($j == $dgrades[$i])
+              {
+                echo 'checked';
+              }
+              ?>></td> 
+			<?php endfor; ?>
+	</tr>
+  <?php $sn_count++; endfor; ?>
+         </tbody>
+       </table>
+			</div>
+		</div>
+		<div class="report-lower">
+			<div class="comment-title">Class Teacher's Comment:</div>
+			<div class="comment-sign">Signature & Date:</div>
+			<div class="comment-title">Principal's Comment:</div>
+			<div class="comment-sign">Signature & Date:</div>
+		</div>
 		<H4><?php echo date('Y-m-d H:i:s', strtotime('-1 hour'));?></H4>
 	</div>	<!-- Print area -->
 		<H4><a href=".">Back</a></H4>

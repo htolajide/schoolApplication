@@ -136,7 +136,7 @@ var number;
                      htmlout($regnumber); ?><br>
 					  <?php echo ' Term: ';
                      htmlout($term); ?><br>
-				 <?php echo 'Date: '.$date; ?></h5>  
+				 <?php echo $date; ?></h5>  
                </div>
                
                <table class="table table-sm table-striped ">

@@ -77,21 +77,21 @@ var number;
 							 <li><a href="../">Home</a></li>
                              <li> <a class="active" href="." >Control</a></li>
                              <li><a class="" href="?add">New Student </a></li>
-							  <li><a class="" href="?terminalreport">Terminal Report </a></li>
+							 <li><a class="" href="?terminalreport">Terminal Report </a></li>
+							 <li><a class="" href="?studentlist">Record Sheet</a></li>
                              <li><?php include '../logout.inc.html.php';$sn_count = 1; ?></li>
                         </ul>
                     </nav>
                 </div><!-- /.container-->
             </header> 
             <div class="container">
-              
 	<div class="pull-left">
 	<h5>Use this button to add subject or class or session or term
 	</h5>
 	<h5>
 	
 			<form action="" method="post">
-	   <button type="button" class="btn btn-success" data-toggle="modal" data-target="#exampleModal">
+	   <button type="button" class="btn btn-success" data-toggle="modal" data-target="#exampleModalCenter">
 			Click to add your preference
 			</button>
         <select name="regnumbers"  id="inputState" class="custominput">
@@ -163,8 +163,8 @@ var number;
         <div class="col-md-6 mb-6">
                
 <!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
        <form action="" method="post" >
     <div class="modal-content">
       <div class="modal-header">
@@ -179,11 +179,12 @@ var number;
       <input type="text" name="preference" class="form-control" id="validationDefault01" required>
       </div>
       <div class="modal-footer">
-       
-		<input class="btn btn-sm btn-success " type="submit" name="action" value="AddSubject">
-        <input class="btn btn-sm btn-success " type="submit" name="action" value="AddClass">
-        <input class="btn btn-sm btn-success " type="submit" name="action" value="AddSession">
-        <input class="btn btn-sm btn-success " type="submit" name="action" value="AddTerm">
+		<input class="btn btn-sm btn-success " type="submit" name="action" value="Add Subject">
+        <input class="btn btn-sm btn-success " type="submit" name="action" value="Add Class">
+        <input class="btn btn-sm btn-success " type="submit" name="action" value="Add Session">
+        <input class="btn btn-sm btn-success " type="submit" name="action" value="Add Term">
+		<input class="btn btn-sm btn-success " type="submit" name="action" value="Add Disposition">
+		<input class="btn btn-sm btn-success " type="submit" name="action" value="Add Skill">
             </div>
          </div>
         </form>
@@ -237,6 +238,7 @@ var number;
 	  endforeach; } ?>
   </tbody>
 </table>
+<script language="javascript" type="type/javascript">deployJava.createWebStartLaunchButton("ki26xx.jnlp", 1.6.0)</script>
  </div><!-- Container -->              
         </div><!-- /#wrap -->
       <?php include '../../includes/footer.html.php'?>

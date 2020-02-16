@@ -34,8 +34,8 @@ try
   }
   catch (PDOException $e)
   {
-      $error = 'Error searching for user name.';
-    //include 'error.html.php';
+    $error = 'Error searching for user name.';
+    include 'error.html.php';
     exit();
   }
 
@@ -50,122 +50,505 @@ try
 				$greeting = $welcome.', '.explode(" ",$row['name'])[0];
 				
 if(isset($_GET['upload'])){
-	include '../../includes/remotedb.inc.php';
-	//insert sales
-	/*try{
-	
-	$fh = fopen("C:/xampp/htdocs/veroyori/backup/sales.csv", "r");
-	while ($line = fgetcsv($fh, 1000, ","))
-		{
-	$id = $line[0];
-	$userid = $line[1];
-	$customerid = $line[2];
-	$productid = $line[3];
-	$brandid = $line[4];
-	$sourceid = $line[5];
-	$categoryid = $line[6];
-	$destinationid = $line[7];
-	$quantity = $line[8];
-	$price = $line[9];
-	$saledate = $line[10];
-	$saleid = $line[11];
-	$credit = $line[12];
-	echo $line[10];
-	echo $line[11];
-	// Insert the data into the sales table
-	$query = "INSERT INTO sales SET id='$id',
-	userid='$userid', customerid='customerid',
-	productid='$productid', brandid='brandid',
-	sourceid='$sourceid', categoryid='$categoryid', destinationid='$destinationid',
-	quantity='$quantity', price='$price', saledate='$saledate', saleid='$saleid' credit='$credit'";
-	$result = $pdo->query($query);
-	}
-	fclose($fh);
-	//$mysqli->close();
-	echo 'file upload successful';
-	}catch(exception $e){
-		$error = 'file cannot be uploaded'.$e;
-		include 'error.html.php';
-		exit();
-	}
-	*/
-	//create csv file for backup.
-	//save all file as an array.
-	$files = array("'C:/xampp/htdocs/comradeacademy/backup/subject.csv'","'C:/xampp/htdocs/comradeacademy/backup/student.csv'","'C:/xampp/htdocs/comradeacademy/backup/payment.csv'",
-	"'C:/xampp/htdocs/comradeacademy/backup/class.csv'","'C:/xampp/htdocs/comradeacademy/backup/pay.csv'","'C:/xampp/htdocs/comradeacademy/backup/role.csv'",
-	"'C:/xampp/htdocs/comradeacademy/backup/session.csv'","'C:/xampp/htdocs/comradeacademy/backup/studentsubject.csv'", 
-	"'C:/xampp/htdocs/comradeacademy/backup/userrole.csv'","'C:/xampp/htdocs/comradeacademy/backup/term.csv'","'C:/xampp/htdocs/comradeacademy/backup/users.csv'");
-	$unlink = array('C:/xampp/htdocs/comradeacademy/backup/subject.csv','C:/xampp/htdocs/comradeacademy/backup/student.csv','C:/xampp/htdocs/comradeacademy/backup/payment.csv',
-	'C:/xampp/htdocs/comradeacademy/backup/class.csv','C:/xampp/htdocs/comradeacademy/backup/pay.csv','C:/xampp/htdocs/comradeacademy/backup/role.csv',
-	'C:/xampp/htdocs/comradeacademy/backup/session.csv','C:/xampp/htdocs/comradeacademy/backup/studentsubject.csv', 
-	'C:/xampp/htdocs/comradeacademy/backup/userrole.csv','C:/xampp/htdocs/comradeacademy/backup/term.csv','C:/xampp/htdocs/comradeacademy/backup/users.csv');
-	$tables = array('subject','student','payment','class','pay','role','session','studentsubject','userrole','term','users');
-
-
-	 for($i=0; $i<count($files); $i++){
-	if (!$file = @ fopen($files[$i], 'x')) {
-	// write conten to remote server
-	try{
-	
-	$sql = 'LOAD DATA INFILE '.$files[$i].' REPLACE INTO TABLE '.$tables[$i].' FIELDS TERMINATED BY \',\' LINES TERMINATED BY \'\n\'';
-	$s = $pdo->prepare($sql2);
-    $s->execute();
-	}catch(exception $e){
-		$error = 'Unable to connect to the database server.'.$e;
-		include 'error.html.php';
-		exit();
-	}
-   }
-  }
-   echo 'Data Upload Successful';	
+	upLoad();
+	$message = 'Data Upload Successful';
+	$link='.';
+	include 'success.html.php';
+	exit();
 }
 	
 //database Backup	
 if(isset($_GET['backup'])){
+	backUp();
+	$message = 'Data Backup Successful, Please copy the BackUp folder inside disk C: to an external disk and keep save';
+	$link='.';
+	include 'success.html.php';
+	exit();
+}
+
+//delete student
+  if (isset($_POST['action']) and $_POST['action'] == 'Delete Student')
+{
+  include '../../includes/db.inc.php';
+
+  
+  // Delete the user
+  try
+  {
+    $deletestdsql = 'DELETE from student WHERE id = :id';
+    $s1 = $pdo->prepare($deletestdsql);
+    $s1->bindValue(':id', $_POST['id']);
+    $s1->execute();
+	$deletesubsql = 'DELETE from studentsubject WHERE studentid = :id';
+    $s2 = $pdo->prepare($deletesubsql);
+    $s2->bindValue(':id', $_POST['id']);
+    $s2->execute();
+	
+  }
+  catch (PDOException $e)
+  {
+    $error = 'Error deleting student.';
+    include 'error.html.php';
+    exit();
+  }
+
+  //header('Location: .');
+  $message= 'student deleted successfully';
+  $link='?students';
+  include 'success.html.php';
+  exit();
+ }
+// Update subject
+if (isset($_POST['action']) and $_POST['action'] == 'Update Subject')
+{
+  include '../../includes/db.inc.php';
+
+  
+  // Delete the user
+  try
+  {
+    $sql = 'UPDATE subject SET
+          name = :name
+          WHERE id = :id';
+      $s = $pdo->prepare($sql);
+      $s->bindValue(':name', $_POST['name']);
+    $s->bindValue(':id', $_POST['id']);
+    $s->execute();
+  }
+  catch (PDOException $e)
+  {
+    $error = 'Error updating subject.';
+    include 'error.html.php';
+    exit();
+  }
+
+  //header('Location: .');
+  $message= 'Subject successfully updated';
+  $link='?preferences';
+  include 'success.html.php';
+  exit();
+ }
+ // Update Class
+if (isset($_POST['action']) and $_POST['action'] == 'Update Class')
+{
+  include '../../includes/db.inc.php';
+
+  try
+  {
+    $sql = 'UPDATE class SET
+          name = :name
+          WHERE id = :id';
+      $s = $pdo->prepare($sql);
+      $s->bindValue(':name', $_POST['name']);
+    $s->bindValue(':id', $_POST['id']);
+    $s->execute();
+  }
+  catch (PDOException $e)
+  {
+    $error = 'Error updating class.';
+    include 'error.html.php';
+    exit();
+  }
+
+  //header('Location: .');
+  $message= 'Class successfully updated';
+  $link='?preferences';
+  include 'success.html.php';
+  exit();
+ }
+ 
+ // Update Disposition
+if (isset($_POST['action']) and $_POST['action'] == 'Update Disposition')
+{
+  include '../../includes/db.inc.php';
+
+  try
+  {
+    $sql = 'UPDATE disposition SET
+          title = :title
+          WHERE id = :id';
+      $s = $pdo->prepare($sql);
+      $s->bindValue(':title', $_POST['title']);
+    $s->bindValue(':id', $_POST['id']);
+    $s->execute();
+  }
+  catch (PDOException $e)
+  {
+    $error = 'Error updating Disposition.';
+    include 'error.html.php';
+    exit();
+  }
+
+  //header('Location: .');
+  $message= 'Disposition successfully updated';
+  $link='?preferences';
+  include 'success.html.php';
+  exit();
+ }
+ 
+ // Update Skill
+if (isset($_POST['action']) and $_POST['action'] == 'Update Skill')
+{
+  include '../../includes/db.inc.php';
+
+  try
+  {
+    $sql = 'UPDATE skill SET
+          title = :title
+          WHERE id = :id';
+      $s = $pdo->prepare($sql);
+      $s->bindValue(':title', $_POST['title']);
+    $s->bindValue(':id', $_POST['id']);
+    $s->execute();
+  }
+  catch (PDOException $e)
+  {
+    $error = 'Error updating skill.';
+    include 'error.html.php';
+    exit();
+  }
+
+  //header('Location: .');
+  $message= 'Skill successfully updated';
+  $link='?preferences';
+  include 'success.html.php';
+  exit();
+ }
+	//Load Students
+	if (isset($_POST['action']) and $_POST['action'] == 'Load Students'){ 
+	
 	include '../../includes/db.inc.php';
 	
-	//create csv file for backup.
-	//save all file as an array.
-	$files = array("'C:/xampp/htdocs/comradeacademy/backup/subject.csv'","'C:/xampp/htdocs/comradeacademy/backup/student.csv'","'C:/xampp/htdocs/comradeacademy/backup/payment.csv'",
-	"'C:/xampp/htdocs/comradeacademy/backup/class.csv'","'C:/xampp/htdocs/comradeacademy/backup/pay.csv'","'C:/xampp/htdocs/comradeacademy/backup/role.csv'",
-	"'C:/xampp/htdocs/comradeacademy/backup/session.csv'","'C:/xampp/htdocs/comradeacademy/backup/studentsubject.csv'", 
-	"'C:/xampp/htdocs/comradeacademy/backup/userrole.csv'","'C:/xampp/htdocs/comradeacademy/backup/term.csv'","'C:/xampp/htdocs/comradeacademy/backup/users.csv'");
-	$unlink = array('C:/xampp/htdocs/comradeacademy/backup/subject.csv','C:/xampp/htdocs/comradeacademy/backup/student.csv','C:/xampp/htdocs/comradeacademy/backup/payment.csv',
-	'C:/xampp/htdocs/comradeacademy/backup/class.csv','C:/xampp/htdocs/comradeacademy/backup/pay.csv','C:/xampp/htdocs/comradeacademy/backup/role.csv',
-	'C:/xampp/htdocs/comradeacademy/backup/session.csv','C:/xampp/htdocs/comradeacademy/backup/studentsubject.csv', 
-	'C:/xampp/htdocs/comradeacademy/backup/userrole.csv','C:/xampp/htdocs/comradeacademy/backup/term.csv','C:/xampp/htdocs/comradeacademy/backup/users.csv');
-	$tables = array('subject','student','payment','class','pay','role','session','studentsubject','userrole','term','users');
-
-	 for($i=0; $i<count($files); $i++){
-	if (!$file = @ fopen($files[$i], 'x')) {
-	// write the contents
-	
-	 unlink($unlink[$i]);
-		try{
-		
-	$sql = 'SELECT * INTO OUTFILE '.$files[$i].' FIELDS TERMINATED BY \',\' LINES TERMINATED BY \'\n\' FROM '.$tables[$i].'';
-	$s = $pdo->prepare($sql);
+	$_SESSION['theclass']=$_POST['classes'];
+	$_SESSION['thesession']=$_POST['sessions'];
+	$_SESSION['theterm']=$_POST['terms'];
+	 // Get list of class assigned to this student
+ 
+ try
+  {
+    $sql = 'SELECT id FROM class WHERE id = :id';
+    $s = $pdo->prepare($sql);
+    $s->bindValue(':id', $_SESSION['theclass']);
     $s->execute();
-
-	}catch(exception $e){
-		$error = 'Server Cannot Output File'.$e;
-		include 'error.html.php';
-		exit();
-	}	
-	}
   }
-   $message = 'Data Backup Successful';
-   $link='.';
-   include 'success.html.php';
+  catch (PDOException $e)
+  {
+    $error = 'Error fetching list of asigned class.';
+    include 'error.html.php';
+    exit();
+  }
+  
+  $selectedClass = array();
+  foreach ($s as $row)
+  {
+    $selectedClass[] = $row['id'];
+  }
+
+// Build the list of all class
+	
+  try
+  {
+    $result = $pdo->query('SELECT id, name FROM class order by name');
+  }
+  catch (PDOException $e)
+  {
+    $error = 'Error fetching list of classes.';
+    include 'error.html.php';
+    exit();
+  }
+
+  foreach ($result as $row)
+  {
+    $classes[] = array(
+      'id' => $row['id'],
+      'name' => $row['name'],
+      'selected' => in_array($row['id'], $selectedClass));
+  }
+
+  // Get list of session assigned to this student
+ 
+ try
+  {
+    $sql = 'SELECT id FROM session WHERE id = :id';
+    $s = $pdo->prepare($sql);
+    $s->bindValue(':id', $_SESSION['thesession']);
+    $s->execute();
+  }
+  catch (PDOException $e)
+  {
+    $error = 'Error fetching list of asigned session.';
+    include 'error.html.php';
+    exit();
+  }
+  
+  $selectedSession = array();
+  foreach ($s as $row)
+  {
+    $selectedSession[] = $row['id'];
+  }
+
+// Build the list of all Session
+	
+  try
+  {
+    $result = $pdo->query('SELECT id, name FROM session order by name');
+  }
+  catch (PDOException $e)
+  {
+    $error = 'Error fetching list of session.';
+    include 'error.html.php';
+    exit();
+  }
+
+  foreach ($result as $row)
+  {
+    $sessions[] = array(
+      'id' => $row['id'],
+      'name' => $row['name'],
+      'selected' => in_array($row['id'], $selectedSession));
+  }
+
+  // Get list of term assigned to this student
+ 
+ try
+  {
+    $sql = 'SELECT id FROM term WHERE id = :id';
+    $s = $pdo->prepare($sql);
+    $s->bindValue(':id', $_SESSION['theterm']);
+    $s->execute();
+  }
+  catch (PDOException $e)
+  {
+    $error = 'Error fetching list of asigned term.';
+    include 'error.html.php';
+    exit();
+  }
+  
+  $selectedTerm = array();
+  foreach ($s as $row)
+  {
+    $selectedTerm[] = $row['id'];
+  }
+
+// Build the list of all term
+	
+  try
+  {
+    $result = $pdo->query('SELECT id, name FROM term order by name');
+  }
+  catch (PDOException $e)
+  {
+    $error = 'Error fetching list of terms.';
+    include 'error.html.php';
+    exit();
+  }
+
+  foreach ($result as $row)
+  {
+    $terms[] = array(
+      'id' => $row['id'],
+      'name' => $row['name'],
+      'selected' => in_array($row['id'], $selectedTerm));
+  }
+  
+  //get regnumber
+  // Build the list regnumbers
+ 
+  try
+  {
+    $result = $pdo->query('SELECT regnumber as name FROM student WHERE classid='. $_SESSION['theclass'].' group by regnumber');
+  }
+  catch (PDOException $e)
+  {
+    $error = 'Error fetching list of terms.';
+    include 'error.html.php';
+    exit();
+  }
+
+  foreach ($result as $row)
+  {
+    $regnumbers[] = array(
+      'name' => $row['name'],
+      'selected' => False);
+  }
+ //get number of female
+  try
+  {
+	$gender ="Female";
+	$sql = 'SELECT count(id) as ngirls FROM student WHERE  classid=:classid AND sessionid=:sessionid AND termid=:termid AND gender =:gender';
+    $s = $pdo->prepare($sql);
+
+	$s->bindValue(':classid', $_SESSION['theclass']);
+	$s->bindValue(':sessionid', $_SESSION['thesession']);
+	$s->bindValue(':termid', $_SESSION['theterm']);
+	$s->bindValue(':gender', $gender);
+    $s->execute();
+  }
+  catch (PDOException $e)
+  {
+    $error = 'Error fetching number of females. '.$e;
+    include 'error.html.php';
+    exit();
+  }
+
+  foreach ($s as $row)
+  {
+    $ngirls = $row['ngirls'];
+  }
+ 
+ //get number of males
+   try
+  {
+	$gender ="Male";
+	$sql = 'SELECT count(id) as nboys FROM student WHERE gender =:gender AND classid=:classid AND sessionid=:sessionid AND termid=:termid';
+    $s = $pdo->prepare($sql);
+    $s->bindValue(':gender', $gender);
+	$s->bindValue(':classid', $_SESSION['theclass']);
+	$s->bindValue(':sessionid', $_SESSION['thesession']);
+	$s->bindValue(':termid', $_SESSION['theterm']);
+    $s->execute();
+  }
+  catch (PDOException $e)
+  {
+    $error = 'Error fetching number of males. '.$e;
+    include 'error.html.php';
+    exit();
+  }
+
+  foreach ($s as $row)
+  {
+    $nboys = $row['nboys'];
+  }
+ //get total number of students
+  try
+  {
+    $result = $pdo->query('SELECT count(id) as ntotal FROM student WHERE classid='.$_SESSION['theclass'].' AND sessionid='.$_SESSION['thesession'].' AND termid='.$_SESSION['theterm']);
+  }
+  catch (PDOException $e)
+  {
+    $error = 'Error fetching number of students.';
+    include 'error.html.php';
+    exit();
+  }
+
+  foreach ($result as $row)
+  {
+    $ntotal = $row['ntotal'];
+  }
+ 
+ 
+ try {  
+	$result = $pdo->query('SELECT student.id as id, regnumber, surname, firstname, othername, parentphone, gender, class.name as class, session.name as session, 
+	term.name as term  FROM student inner join class on class.id = classid inner join session on session.id = sessionid inner join term 
+	on term.id = termid WHERE classid ='.$_SESSION['theclass'].' AND termid ='.$_SESSION['theterm'].' AND sessionid = '.$_SESSION['thesession'].' AND  student.deleted = 0');
+	}
+	catch (PDOException $e) { 
+		$error = 'Error fetching students from the database!'.$e;  
+		include 'error.html.php';   
+		exit(); 
+		}
+		foreach ($result as $row) {  
+		$students[] = array('id' => $row['id'], 'regnumber' => $row['regnumber'],'surname' => $row['surname'],'firstname' => $row['firstname'], 'othername' => $row['othername'],
+		'class' => $row['class'], 'session' => $row['session'], 'term' => $row['term'], 'parentphone' => $row['parentphone'], 'gender' => $row['gender']);
+		}
+		include 'students.html.php';
+		exit();
+
+	}
+	
+// manage preferences
+if (isset($_GET['preferences']))
+{
+  include '../../includes/db.inc.php';
+  
+   // Build the list of all classes
+  try
+  {
+    $result = $pdo->query('SELECT id, name FROM class order by name');
+  }
+  catch (PDOException $e)
+  {
+    $error = 'Error fetching list of branch.';
+    include 'error.html.php';
+    exit();
+  }
+
+  foreach ($result as $row)
+  {
+    $classes[] = array(
+      'id' => $row['id'],
+      'name' => $row['name']);
+      //'selected' => in_array($row['id'], $selectedSources));
+  }
+  // Build the list of all subjects
+  try
+  {
+    $result = $pdo->query('SELECT id, name FROM subject order by name');
+  }
+  catch (PDOException $e)
+  {
+    $error = 'Error fetching list of branch.';
+    include 'error.html.php';
+    exit();
+  }
+
+  foreach ($result as $row)
+  {
+    $subjects[] = array(
+      'id' => $row['id'],
+      'name' => $row['name']);
+      //'selected' => in_array($row['id'], $selectedSources));
+  }
+	
+	// Build the list of all skills
+  try
+  {
+    $result = $pdo->query('SELECT id, title FROM disposition order by title');
+  }
+  catch (PDOException $e)
+  {
+    $error = 'Error fetching list of branch.';
+    include 'error.html.php';
+    exit();
+  }
+
+  foreach ($result as $row)
+  {
+    $dispositions[] = array(
+      'id' => $row['id'],
+      'title' => $row['title']);
+      //'selected' => in_array($row['id'], $selectedSources));
+  }
+  
+  // Build the list of all skills
+  try
+  {
+    $result = $pdo->query('SELECT id, title FROM skill order by title');
+  }
+  catch (PDOException $e)
+  {
+    $error = 'Error fetching list of branch.';
+    include 'error.html.php';
+    exit();
+  }
+
+  foreach ($result as $row)
+  {
+    $skills[] = array(
+      'id' => $row['id'],
+      'title' => $row['title']);
+      //'selected' => in_array($row['id'], $selectedSources));
+  }
+  include 'preferences.html.php';
+  exit();
 }
 
 
 if (isset($_GET['add']))
 {
   include '../../includes/db.inc.php';
-
   $pageTitle = 'Add New User';
-   $pageHeading ='Enter User Information and Press Add User to Submit';
+  $pageHeading ='Enter User Information and Press Add User to Submit';
   $action = 'addform';
   $name = '';
   $email = '';
@@ -227,6 +610,20 @@ if (isset($_GET['addform']))
 
   try
   {
+	// student image/photo to register
+	$img = $_POST['image'];
+    $folderPath = "upload/";
+  
+    $image_parts = explode(";base64,", $img);
+    $image_type_aux = explode("image/", $image_parts[0]);
+    $image_type = $image_type_aux[1];
+  
+    $image_base64 = base64_decode($image_parts[1]);
+    $fileName = uniqid() . '.png';
+  
+    $file = $folderPath . $fileName;
+    file_put_contents($file, $image_base64);
+  
     $sql = 'INSERT INTO users SET
         name = :name,
         phone = :phone,
@@ -234,14 +631,16 @@ if (isset($_GET['addform']))
         gender = :gender,
         date = CURDATE(),
 		classid =:classid,
-        email = :email';
+        email = :email,
+		photo = :photo,';
     $s = $pdo->prepare($sql);
     $s->bindValue(':name', $_POST['name']);
     $s->bindValue(':phone', $_POST['phone']);
     $s->bindValue(':address', $_POST['address']);
     $s->bindValue(':gender', $_POST['gender']);
     $s->bindValue(':email', $_POST['email']);
-	 $s->bindValue(':classid', $_POST['classes']);
+	$s->bindValue(':photo', $file);
+	$s->bindValue(':classid', $_POST['classes']);
     $s->execute();
   }
   catch (PDOException $e)
@@ -299,13 +698,10 @@ if (isset($_GET['addform']))
       }
     }
   }
- 
-
-  //header('Location: .');
   $message = 'User Added';
   $link = '.';
   include 'success.html.php';
-  //exit();
+  exit();
 }
 
 if (isset($_POST['action']) and $_POST['action'] == 'Update')
@@ -314,7 +710,7 @@ if (isset($_POST['action']) and $_POST['action'] == 'Update')
 
   try
   {
-    $sql = 'SELECT id, name, phone, address, gender, date, email, classid FROM users WHERE id = :id';
+    $sql = 'SELECT id, name, phone, address, gender, date, email, photo, classid FROM users WHERE id = :id';
     $s = $pdo->prepare($sql);
     $s->bindValue(':id', $_POST['id']);
     $s->execute();
@@ -338,6 +734,7 @@ if (isset($_POST['action']) and $_POST['action'] == 'Update')
   $date = $row['date'];
   $email = $row['email'];
   $classid = $row['classid'];
+  $photo = $row['photo'];
   $id = $row['id'];
   $button = 'Update';
   
@@ -433,6 +830,25 @@ if (isset($_GET['updateform']))
 
   try
   {
+	  // check for student image/photo to register
+	$img = $_POST['image'];
+	//echo $img;
+	$photopath = substr($img,0,7);
+	//echo $photopath;
+    $folderPath = "upload/";
+	if ($photopath == $folderPath){
+		$file = $img;
+	}else{
+    $image_parts = explode(";base64,", $img);
+    $image_type_aux = explode("image/", $image_parts[0]);
+    $image_type = $image_type_aux[1];
+  
+    $image_base64 = base64_decode($image_parts[1]);
+    $fileName = uniqid() . '.png';
+  
+    $file = $folderPath . $fileName;
+    file_put_contents($file, $image_base64);
+	}
     $sql = 'UPDATE users SET
         name = :name,
         phone = :phone,
@@ -440,6 +856,7 @@ if (isset($_GET['updateform']))
         gender = :gender,
         date = :date,
         email = :email,
+		photo = :photo,
 		classid = :classid
         WHERE id = :id';
     $s = $pdo->prepare($sql);
@@ -451,6 +868,7 @@ if (isset($_GET['updateform']))
     $s->bindValue(':date', $_POST['date']);
 	$s->bindValue(':classid', $_POST['classes']);
     $s->bindValue(':email', $_POST['email']);
+	$s->bindValue(':photo', $file);
     $s->execute();
   }
   catch (PDOException $e)
@@ -526,17 +944,13 @@ if (isset($_GET['updateform']))
     $link = '.';
     include 'success.html.php';
     //echo $message;
-  //exit();
-    
-  
+    exit();
 }
 
 //dele all Users
  if (isset($_GET['deleteAll']))
 {
-  include '../../includes/db.inc.php';
-
-  
+  include '../../includes/db.inc.php'; 
   // Delete the author
   try
   {
@@ -559,7 +973,258 @@ if (isset($_GET['updateform']))
   include 'success.html.php';
   exit();
 }
+
+//display students list for admin
+
+  if(isset($_GET['students'])){
+	 // Display student list
+ 
+ include  '../../includes/db.inc.php';
+ 
+ if(isset($_SESSION['theclass']) && isset($_SESSION['thesession']) && isset($_SESSION['theterm'])){
+	$theclass = $_SESSION['theclass'];
+    $thesession = $_SESSION['thesession'];
+    $theterm = $_SESSION['theterm']; 
+ }else{
+	$theclass = $_SESSION['class'];
+	$thesession = 1;
+	$theterm = 1;
+ }
+ // Get list of class assigned to this student
+ 
+ try
+  {
+    $sql = 'SELECT id FROM class WHERE id = :id';
+    $s = $pdo->prepare($sql);
+    $s->bindValue(':id', $theclass);
+    $s->execute();
+  }
+  catch (PDOException $e)
+  {
+    $error = 'Error fetching list of asigned class.';
+    include 'error.html.php';
+    exit();
+  }
   
+  $selectedClass = array();
+  foreach ($s as $row)
+  {
+    $selectedClass[] = $row['id'];
+  }
+
+// Build the list of all class
+	
+  try
+  {
+    $result = $pdo->query('SELECT id, name FROM class order by name');
+  }
+  catch (PDOException $e)
+  {
+    $error = 'Error fetching list of classes.';
+    include 'error.html.php';
+    exit();
+  }
+
+  foreach ($result as $row)
+  {
+    $classes[] = array(
+      'id' => $row['id'],
+      'name' => $row['name'],
+      'selected' => in_array($row['id'], $selectedClass));
+  }
+
+  // Get list of session assigned to this student
+ 
+ try
+  {
+    $sql = 'SELECT id FROM session WHERE id = :id';
+    $s = $pdo->prepare($sql);
+    $s->bindValue(':id', $thesession);
+    $s->execute();
+  }
+  catch (PDOException $e)
+  {
+    $error = 'Error fetching list of asigned session.';
+    include 'error.html.php';
+    exit();
+  }
+  
+  $selectedSession = array();
+  foreach ($s as $row)
+  {
+    $selectedSession[] = $row['id'];
+  }
+
+// Build the list of all Session
+	
+  try
+  {
+    $result = $pdo->query('SELECT id, name FROM session order by name');
+  }
+  catch (PDOException $e)
+  {
+    $error = 'Error fetching list of session.';
+    include 'error.html.php';
+    exit();
+  }
+
+  foreach ($result as $row)
+  {
+    $sessions[] = array(
+      'id' => $row['id'],
+      'name' => $row['name'],
+      'selected' => in_array($row['id'], $selectedSession));
+  }
+
+  // Get list of term assigned to this student
+ 
+ try
+  {
+    $sql = 'SELECT id FROM term WHERE id = :id';
+    $s = $pdo->prepare($sql);
+    $s->bindValue(':id', $theterm);
+    $s->execute();
+  }
+  catch (PDOException $e)
+  {
+    $error = 'Error fetching list of asigned term.';
+    include 'error.html.php';
+    exit();
+  }
+  
+  $selectedTerm = array();
+  foreach ($s as $row)
+  {
+    $selectedTerm[] = $row['id'];
+  }
+
+// Build the list of all term
+	
+  try
+  {
+    $result = $pdo->query('SELECT id, name FROM term order by name');
+  }
+  catch (PDOException $e)
+  {
+    $error = 'Error fetching list of terms.';
+    include 'error.html.php';
+    exit();
+  }
+
+  foreach ($result as $row)
+  {
+    $terms[] = array(
+      'id' => $row['id'],
+      'name' => $row['name'],
+      'selected' => in_array($row['id'], $selectedTerm));
+  }
+
+  //get regnumber
+  // Build the list regnumbers
+ 
+  try
+  {
+    $result = $pdo->query('SELECT regnumber as name FROM student WHERE classid='. $theclass.' group by regnumber');
+  }
+  catch (PDOException $e)
+  {
+    $error = 'Error fetching list of terms.';
+    include 'error.html.php';
+    exit();
+  }
+
+  foreach ($result as $row)
+  {
+    $regnumbers[] = array(
+      'name' => $row['name'],
+      'selected' => False);
+  }
+  
+ //get number of female
+  try
+  {
+	$gender ="Female";
+	$sql = 'SELECT count(id) as ngirls FROM student WHERE  classid=:classid AND sessionid=:sessionid AND termid=:termid AND gender =:gender';
+    $s = $pdo->prepare($sql);
+
+	$s->bindValue(':classid', $theclass);
+	$s->bindValue(':sessionid', $thesession);
+	$s->bindValue(':termid', $theterm);
+	$s->bindValue(':gender', $gender);
+    $s->execute();
+  }
+  catch (PDOException $e)
+  {
+    $error = 'Error fetching number of females. '.$e;
+    include 'error.html.php';
+    exit();
+  }
+
+  foreach ($s as $row)
+  {
+    $ngirls = $row['ngirls'];
+  }
+ 
+ //get number of males
+   try
+  {
+	$gender ="Male";
+	$sql = 'SELECT count(id) as nboys FROM student WHERE gender =:gender AND classid=:classid AND sessionid=:sessionid AND termid=:termid';
+    $s = $pdo->prepare($sql);
+    $s->bindValue(':gender', $gender);
+	$s->bindValue(':classid', $theclass);
+	$s->bindValue(':sessionid', $thesession);
+	$s->bindValue(':termid', $theterm);
+    $s->execute();
+  }
+  catch (PDOException $e)
+  {
+    $error = 'Error fetching number of males. '.$e;
+    include 'error.html.php';
+    exit();
+  }
+
+  foreach ($s as $row)
+  {
+    $nboys = $row['nboys'];
+  }
+ //get total number of students
+  try
+  {
+    $result = $pdo->query('SELECT count(id) as ntotal FROM student WHERE classid='.$theclass.' AND sessionid='.$thesession.' AND termid='.$theterm);
+  }
+  catch (PDOException $e)
+  {
+    $error = 'Error fetching number of students.';
+    include 'error.html.php';
+    exit();
+  }
+
+  foreach ($result as $row)
+  {
+    $ntotal = $row['ntotal'];
+  }
+ 
+ 
+ try {  
+	$result = $pdo->query('SELECT student.id as id, regnumber, surname, firstname, othername, parentphone, gender, class.name as class, session.name as session, 
+	term.name as term  FROM student inner join class on class.id = classid inner join session on session.id = sessionid inner join term 
+	on term.id = termid WHERE classid ='.$theclass.' AND termid ='.$theterm.' AND sessionid = '.$thesession.' AND  student.deleted = 0');
+	}
+	catch (PDOException $e) { 
+		$error = 'Error fetching students from the database!'.$e;  
+		include 'error.html.php';   
+		exit(); 
+		}
+		foreach ($result as $row) {  
+		$students[] = array('id' => $row['id'], 'regnumber' => $row['regnumber'],'surname' => $row['surname'],'firstname' => $row['firstname'], 'othername' => $row['othername'],
+		'class' => $row['class'], 'session' => $row['session'], 'term' => $row['term'], 'parentphone' => $row['parentphone'], 'gender' => $row['gender']);
+		}
+		include 'students.html.php';
+			exit();
+  }
+  
+  //delete user
   if (isset($_POST['action']) and $_POST['action'] == 'Delete')
 {
   include '../../includes/db.inc.php';
@@ -630,7 +1295,7 @@ if (isset($_POST['action']) and $_POST['action'] == 'realDelete')
   $message= 'delete successful';
   $link='.';
   include 'success.html.php';
-  //exit();
+  exit();
 }
 
 // Display user list
@@ -638,7 +1303,7 @@ include  '../../includes/db.inc.php';
 
 try
 {
-  $result = $pdo->query('SELECT id, name, phone, email  FROM users where deleted = 0');
+  $result = $pdo->query('SELECT id, name, phone, email, photo  FROM users where deleted = 0');
 }
 catch (PDOException $e)
 {
@@ -649,7 +1314,7 @@ catch (PDOException $e)
 
 foreach ($result as $row)
 {
-  $users[] = array('id' => $row['id'], 'name' => $row['name'],'phone' => $row['phone'],'email' => $row['email'] );
+  $users[] = array('id' => $row['id'], 'name' => $row['name'],'phone' => $row['phone'],'email' => $row['email'], 'photo' => $row['photo'] );
 }
 
 include 'users.html.php';

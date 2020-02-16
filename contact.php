@@ -64,12 +64,12 @@ var number;
             <div class="container">                
                 <div class="clr"></div>
                 <div id="content">
-                    <h1>Veroyori Contacts</h1>
+                    <h1>Comrade Academy</h1>
                     <p>
-                      You can contact Veroyori on 08069758865 
+                      You can contact us on 08062247210
                     </p>
                     <p>
-                        Also on 08064828003
+                        Also on 08162082226
                   
 
                     </p>

@@ -79,6 +79,7 @@ var number;
 							 <li> <a class="" href="?todaypayments" >Payment Record</a></li>
                              <li><a class="" href="?paytypes">Payments Data</a></li>
 							 <li><a class="" href="?expenses">Expenses</a></li>
+							 <li><a class="" href="?paymentsummary">Payment Summary</a></li>
                              <li><?php include '../logout.inc.html.php';$sn_count = 1; ?></li>
                         </ul>
                     </nav>

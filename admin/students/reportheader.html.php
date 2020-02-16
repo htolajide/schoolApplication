@@ -15,14 +15,54 @@
 		WinPrint.document.write('<html><head>');
 		WinPrint.document.write('<link href="../../css/bootstrap.min.css" rel="stylesheet">');
 		WinPrint.document.write('<link rel="stylesheet" href="../../css/style.css" type="text/css" />');
-		WinPrint.document.write(' <link rel="stylesheet" href="../../css/reset.css" type="text/css" />');
 		WinPrint.document.write('</head><body onload="print();close();">');
+		WinPrint.document.write('<style type="text/css">' +
+        'table thead, tbody td {' +
+        'border:1px solid #000;' +
+        'padding;0.2em;' +
+		'font-size: 24px'+
+        '}' + 
+		'table tfoot {' +
+        'padding;0.2em;' +
+		'font-size: 24px'+
+        '}' + 
+		'body {' + 
+		'line-height:1.5em;' +
+		'font-size: 22px'+
+		'}' +
+		'table thead, legend, h4 { ' +
+		'font-weight: bold' +
+		'}' +
+		'legend {' +
+		'font-size: 32px' +
+		'marging-bottom: 5px' +
+		'}'+
+		'h4 {' +
+		'font-size: 38px'+
+		'marging-bottom: 5px' +
+		'}'+
+		'h5 {' +
+		'font-size: 38px'+
+		'font-weight: bold' +
+		'}'+
+		'div.result-photo { '+
+        'margin: auto 8.0em;'+
+		'float: left;'+
+		'}'+
+		'.report-upper{' +
+		'border-top:1px solid #000;' +
+		'}'+
+		'.report-lower{' +
+		'border-top:1px solid #000;' +
+		'}'+
+        '</style>');
 		WinPrint.document.write(prtContent.innerHTML);
 		WinPrint.document.write('</body></html>');
 		WinPrint.document.close();
 		WinPrint.focus();
     }
         </script>
+
 
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">

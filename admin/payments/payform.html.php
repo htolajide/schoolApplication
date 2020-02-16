@@ -95,10 +95,8 @@ var number;
         
            
     <div class="container border border-secondary rounded">
-		
-    <div class="showcase-left">
-                        
-    <form action=?<?php htmlout($action); ?> method="post" >
+	                    
+    <form id="action-form" action=?<?php htmlout($action); ?> method="post" >
 	
 	 <div class="row">
 	  <div class="col-md-6 mb-6">
@@ -135,9 +133,6 @@ var number;
 	<input type="hidden" name="id" value="<?php
             htmlout($id); ?>">
 	</form>
-    </div><!-- /.showcase-left-->        
-                <div class="clr">
-				</div>
     
 	</div><!-- Container -->              
     </div><!-- /#wrap -->

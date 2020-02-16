@@ -17,6 +17,7 @@
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
     <link href="../../css/bootstrap.min.css" rel="stylesheet">
+	<script src="../../js/webcam.min.js"></script>
 
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <link href="../../css/ie10-viewport-bug-workaround.css" rel="stylesheet">
@@ -85,19 +86,15 @@ var number;
                     </nav>
                 </div><!-- /.container-->
             </header> 
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-         <a href="."><img src="../../images/back.png" alt="backicon" /></a>
-         <ul>
-             <li> <?php htmlout($pageHeading); ?></li>
-         </ul>
-      
-        </div>
-        
-           
-    <div class="container border border-secondary rounded">
+			<div class="alert alert-success alert-dismissible fade show text-center" role="alert">
+				<?php htmlout($pageHeading); ?>
+			</div>
+    <div class="container">
 		
-        <div class="showcase-left">
-                        
+    <div class="showcase-left">
+	<div class="upper-content">
+      <legend>Student Info </legend> 
+		<div class="content">
     <form action=?<?php htmlout($action); ?> method="post" >
     <div class="row">
     <div class="col-md-6 mb-6">
@@ -201,12 +198,89 @@ var number;
     </div>
     <div class="col-md-6 mb-6">
 	 <label for="validationDefault09">Press:</label>
-         <input class="btn btn-success form-control md-6" type="submit" value="<?php htmlout($button); ?>">
+         <input class="btn btn-success form-control md-6" type="submit" value="<?php htmlout($button);  $sn_count=1; ?>">
     </div>
-      </div>
+   </div>
+   </div>
+   </div>
+   <div class="lower-content">
+		<legend>Affective Disposition </legend>
+		<div class="content">
+		<table class="table table-sm table-striped ">
+  <thead>
+    <tr>
+      <td scope="col">S/No</td>
+	  <td scope="col">Title</td>
+	  <td scope="col">A</td>
+      <td scope="col">B</td>
+	  <td scope="col">C</td>
+	  <td scope="col">D</td>
+	  <td scope="col">E</td>  
+    </tr>
+  </thead>
+  <tbody>
+   <?php for ($i = 0; $i < count($dispositions); $i++):  ?>
+    <tr>
+	  <td><?php htmlout($sn_count); ?></td>
+	  <input type="hidden" name = "dispositions[]" value="<?php htmlout($dispositions[$i]['id']); ?>" />
+      <td><?php htmlout($dispositions[$i]['title']); ?></td>
+      <?php for ($j = 1; $j < 6; $j++): ?>
+            <td><input type="checkbox" 
+              name="dgrades[]" id=grade<?php echo $j; ?> 
+			  value="<?php htmlout($j); ?>" <?php
+              if ($j == $dgrades[$i])
+              {
+                echo 'checked';
+              }
+              ?>></td> 
+			<?php endfor; ?>
+	</tr>
+  <?php $sn_count++; endfor; ?>
+         </tbody>
+       </table>
+	   </div>
+    </div>
     </div><!-- /.showcase-left-->
-	<div class="showcase-right">	
+	<div class="showcase-right">
+	<div class="upper-content">
+	<legend>Photo & Subjects </legend>
+	<div class="content">
+	<div class="student-photo">
+    <img src="<?php if ($image == ""){htmlout('https://via.placeholder.com/150');}else{ htmlout($image);} ?>" />
+    </div> 
+	<button type="button" class="btn btn-secondary btn-sm" id="photo-btn" data-toggle="modal" data-target="#exampleModal">
+			Capture Student Photo
+	</button>
+		
+		<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Capture Student Photo</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+            <div class="col-md-6">
+                <div id="my_camera"></div>
+            </div>
+            <div class="col-md-6">
+                <div id="results">Your captured image will appear here...</div>
+            </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+		<input type=button id="capture-btn" class="btn btn-secondary btn-sm" value="Take Snapshot" onClick="take_snapshot()">
+         <input type="hidden" name="image" value="<?php htmlout($image); ?>" class="image-tag"> 
+      </div>
+         </div>
+       </div>
+       </div>
          <legend>Subjects: 1st Test:  2nd Test:  Exam: </legend>
+		 <div class="content">
         <?php for ($i = 0; $i < count($subjects); $i++): ?>
             <label for=role<?php echo $i; ?>  ><input type="checkbox" 
               name="subjects[]" id=subject<?php echo $i; ?>
@@ -217,11 +291,53 @@ var number;
               }
               ?>></label>
                 <?php htmlout(' '.$subjects[$i]['name']); ?>
-		<input type="text" class="customtest1" name="test1s[]" value="<?php htmlout($test1s[$i]); ?>">
-		<input type="text" class="customtest2" name="test2s[]" value="<?php htmlout($test2s[$i]); ?>">
-		<input type="text" class="customscore" name="scores[]" value="<?php htmlout($scores[$i]); ?>">
+		<input type="number" class="customtest1" name="test1s[]" value="<?php htmlout($test1s[$i]); ?>">
+		<input type="number" class="customtest2" name="test2s[]" value="<?php htmlout($test2s[$i]); ?>">
+		<input type="number" class="customscore" name="scores[]" value="<?php htmlout($scores[$i]); ?>">
         <?php endfor; ?>
+		</div>
       </fieldset>
+	   </div>
+	   </div>
+	   <div class="lower-content">
+		<legend>Psychomonous Skills</legend>
+		<div class="content">
+		<table class="table table-sm table-striped ">
+  <thead>
+    <tr>
+      <td scope="col">S/No</td>
+	  <td scope="col">Title</td>
+	  <td scope="col">A</td>
+      <td scope="col">B</td>
+	  <td scope="col">C</td>
+	  <td scope="col">D</td>
+	  <td scope="col">E</td>  
+    </tr>
+  </thead>
+  <tbody>
+<?php $sn_count = 1 ?>
+   <?php for ($i = 0; $i < count($skills); $i++): ?>
+    <tr>
+	  <td><?php htmlout($sn_count); ?></td>
+	  <input type="hidden"  name = "skills[]" value="<?php htmlout($skills[$i]['id']); ?>" />
+      <td><?php htmlout($skills[$i]['title']); ?></td>
+      <?php for ($j = 1; $j < 6; $j++): ?>
+            <td><input type="checkbox" 
+              name="sgrades[]" id=grade<?php echo $j; ?> 
+			  value="<?php htmlout($j); ?>" <?php
+              if ($j == $sgrades[$i])
+              {
+                echo 'checked';
+              }
+              ?>></td> 
+			<?php endfor; ?>
+	</tr>
+  <?php $sn_count++; endfor; ?>
+         </tbody>
+       </table>
+	   </div>
+	</div> 
+   </div>	
 		<input type="hidden" name="id" value="<?php
             htmlout($id); ?>">
 	</form>
@@ -231,10 +347,27 @@ var number;
                 <div class="clr">
 				</div>
     
-	</div><!-- Container -->              
+	</div><!-- BodyContainer -->              
     </div><!-- /#wrap -->
       <?php include '../../includes/footer.html.php'?>
-        
+        <!-- Configure a few settings and attach camera -->
+<script language="JavaScript">
+    Webcam.set({
+        width: 450,
+        height: 300,
+        image_format: 'jpeg',
+        jpeg_quality: 120
+    });
+  
+    Webcam.attach( '#my_camera' );
+  
+    function take_snapshot() {
+        Webcam.snap( function(data_uri) {
+            $(".image-tag").val(data_uri);
+            document.getElementById('results').innerHTML = '<img src="'+data_uri+'"/>';
+        } );
+    }
+</script>
          <script src="../../js/ie10-viewport-bug-workaround.js"></script>
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->

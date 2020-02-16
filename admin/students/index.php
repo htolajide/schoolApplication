@@ -34,28 +34,25 @@ try
   }
   catch (PDOException $e)
   {
-      $error = 'Error searching for user name.';
-    //include 'error.html.php';
-    exit();
+		$error = 'Error searching for user name.';
+		include 'error.html.php';
+		exit();
   }
   $_SESSION['teacher'] = $row['name'];
   $_SESSION['class'] = $row['classid'];
-
-                $welcome = 'Hi';
-					if (date("H") <= 12) {
-						$welcome = 'Good Morning';
-					} else if (date('H') > 12 && date("H") < 18) {
-						$welcome = 'Good Afternoon';
-					} else if(date('H') > 17) {
-						$welcome = 'Good Evening';
+		$welcome = 'Hi';
+			if (date("H") <= 12) {
+				$welcome = 'Good Morning';
+			} else if (date('H') > 12 && date("H") < 18) {
+				$welcome = 'Good Afternoon';
+				} else if(date('H') > 17) {
+					$welcome = 'Good Evening';
 					}
-				$greeting = $welcome.', '.explode(" ", $_SESSION['teacher'])[0];
-				
+				$greeting = $welcome.', '.explode(" ", $_SESSION['teacher'])[0];			
 // add class
-if (isset($_POST['action']) and $_POST['action'] == 'AddClass')
+if (isset($_POST['action']) and $_POST['action'] == 'Add Class')
 {
-    $action = '';
-    
+  $action = ''; 
   include '../../includes/db.inc.php';
 
   // check for class existence
@@ -69,12 +66,9 @@ if (isset($_POST['action']) and $_POST['action'] == 'AddClass')
 			if($name == $_POST['preference'] ){
 			$error = 'Class Already Exist.';
 			include 'error.html.php';
-			exit();
-			
-		}
-            
-        } 
-		
+			exit();	
+			}    
+        } 	
     } 
   try
   {
@@ -92,29 +86,25 @@ if (isset($_POST['action']) and $_POST['action'] == 'AddClass')
    $message= 'Class Addition successful';
   $link='.';
   include 'success.html.php';
-  //exit();
+  exit();
 }
 
-if (isset($_POST['action']) and $_POST['action'] == 'AddSubject')
+if (isset($_POST['action']) and $_POST['action'] == 'Add Subject')
 {
-    $action = '';
-    
+  $action = ''; 
   include '../../includes/db.inc.php';
 
   // check for class existence
 	$sql= 'Select name from subject';
     $s = $pdo->prepare($sql);
-    
     if ($s->execute()){
         foreach ($s as $row){
             $name = $row['name'];
 			if($name == $_POST['preference'] ){
 			$error = 'Subject Already Exist.';
 			include 'error.html.php';
-			exit();
-			
-		}
-            
+			exit();	
+			}
         } 
 		
     } 
@@ -131,21 +121,18 @@ if (isset($_POST['action']) and $_POST['action'] == 'AddSubject')
     include 'error.html.php';
     exit();
   }
-   $message= 'Suject Addition successful';
+  $message= 'Suject Addition successful';
   $link='.';
   include 'success.html.php';
-  //exit();
+  exit();
 }
 
-if (isset($_POST['action']) and $_POST['action'] == 'AddSession')
+if (isset($_POST['action']) and $_POST['action'] == 'Add Session')
 {
     $action = '';
-    
-  include '../../includes/db.inc.php';
-  
-  $sql= 'Select name from session';
+    include '../../includes/db.inc.php';
+	$sql= 'Select name from session';
     $s = $pdo->prepare($sql);
-    
     if ($s->execute()){
         foreach ($s as $row){
             $name = $row['name'];
@@ -154,13 +141,9 @@ if (isset($_POST['action']) and $_POST['action'] == 'AddSession')
 			$error = 'Session Already Exist.';
 			include 'error.html.php';
 			exit();
-			
-		}
-            
+			}
         } 
-		
-    } 
-
+	} 
   try
   {
     $sql = 'INSERT INTO session set name=:name';
@@ -177,17 +160,16 @@ if (isset($_POST['action']) and $_POST['action'] == 'AddSession')
   $message= 'Session Addition successful';
   $link='.';
   include 'success.html.php';
-  //exit();
+  exit();
 }
-if (isset($_POST['action']) and $_POST['action'] == 'AddTerm')
-{ 
-    $action = '';
-  include '../../includes/db.inc.php';
 
+if (isset($_POST['action']) and $_POST['action'] == 'Add Term')
+{ 
+  $action = '';
+  include '../../includes/db.inc.php';
   // add category
   $sql= 'Select name from term';
     $s = $pdo->prepare($sql);
-    
     if ($s->execute()){
         foreach ($s as $row){
             $name = $row['name'];
@@ -214,12 +196,86 @@ if (isset($_POST['action']) and $_POST['action'] == 'AddTerm')
   $message= 'Term Addition successful';
   $link='.';
   include 'success.html.php';
-  //exit();
+  exit();
 }
+
+// add disposition
+if (isset($_POST['action']) and $_POST['action'] == 'Add Disposition')
+{
+    $action = '';
+    include '../../includes/db.inc.php';
+	$sql= 'Select title from disposition';
+    $s = $pdo->prepare($sql);
+    if ($s->execute()){
+        foreach ($s as $row){
+            $title = $row['title'];
+			
+			if($title == $_POST['preference'] ){
+			$error = 'Disposition Already Exist.';
+			include 'error.html.php';
+			exit();
+			}
+        } 
+	} 
+  try
+  {
+    $sql = 'INSERT INTO disposition set title=:title';
+    $s = $pdo->prepare($sql);
+    $s->bindValue(':title', $_POST['preference']);
+    $s->execute();
+  }
+  catch (PDOException $e)
+  {
+    $error = 'Error Adding Disposition.'.$e;
+    include 'error.html.php';
+    exit();
+  }
+  $message= 'Disposition Addition successful';
+  $link='.';
+  include 'success.html.php';
+  exit();
+}
+// add skill
+if (isset($_POST['action']) and $_POST['action'] == 'Add Skill')
+{
+    $action = '';
+    include '../../includes/db.inc.php';
+	$sql= 'Select title from skill';
+    $s = $pdo->prepare($sql);
+    if ($s->execute()){
+        foreach ($s as $row){
+            $title = $row['title'];
+			
+			if($title == $_POST['preference'] ){
+			$error = 'Skill Already Exist.';
+			include 'error.html.php';
+			exit();
+			}
+        } 
+	} 
+  try
+  {
+    $sql = 'INSERT INTO skill SET title=:title';
+    $s = $pdo->prepare($sql);
+    $s->bindValue(':title', $_POST['preference']);
+    $s->execute();
+  }
+  catch (PDOException $e)
+  {
+    $error = 'Error Adding Skill.'.$e;
+    include 'error.html.php';
+    exit();
+  }
+  $message= 'Skill Addition successful';
+  $link='.';
+  include 'success.html.php';
+  exit();
+}
+
+// register new student
 if (isset($_GET['add']))
 {
   include '../../includes/db.inc.php';
-
   $pageTitle = 'Add New Student';
   $pageHeading ='Enter Student Information and Press Register to Submit';
   $action = 'addform';
@@ -239,6 +295,8 @@ if (isset($_GET['add']))
   $scores=0;
   $test1s=0;
   $test2s=0;
+  $dgrades = 0; //dispositions grades
+  $sgrades = 0; //skills grades
 
   // Build the list of class
   try
@@ -319,6 +377,46 @@ if (isset($_GET['add']))
       'selected' => FALSE);
   }
   
+  // Build the list of disposition
+  try
+  {
+    $result = $pdo->query('SELECT id, title FROM disposition order by title');
+  }
+  catch (PDOException $e)
+  {
+    $error = 'Error fetching list of disposition.';
+    include 'error.html.php';
+    exit();
+  }
+
+  foreach ($result as $row)
+  {
+    $dispositions[] = array(
+      'id' => $row['id'],
+      'title' => $row['title'],
+      'selected' => FALSE);
+  }
+  
+  // Build the list of skills
+  try
+  {
+    $result = $pdo->query('SELECT id, title FROM skill order by title');
+  }
+  catch (PDOException $e)
+  {
+    $error = 'Error fetching list of skill.';
+    include 'error.html.php';
+    exit();
+  }
+
+  foreach ($result as $row)
+  {
+    $skills[] = array(
+      'id' => $row['id'],
+      'title' => $row['title'],
+      'selected' => FALSE);
+  }
+  
   include 'form.html.php';
   exit();
 }
@@ -329,6 +427,21 @@ if (isset($_GET['addform']))
 
   try
   {
+	  // student image/photo to register
+	 $img = $_POST['image'];
+    $folderPath = "upload/";
+  
+    $image_parts = explode(";base64,", $img);
+    $image_type_aux = explode("image/", $image_parts[0]);
+    $image_type = $image_type_aux[1];
+  
+    $image_base64 = base64_decode($image_parts[1]);
+    $fileName = uniqid() . '.png';
+  
+    $file = $folderPath . $fileName;
+    file_put_contents($file, $image_base64);
+  
+    //echo $file;
     $sql = 'INSERT INTO student SET
         surname = :surname,
 		firstname = :firstname,
@@ -338,6 +451,7 @@ if (isset($_GET['addform']))
         dob = :dob,
         gender = :gender,
         date = CURDATE(),
+		image = :image
         classid = :classid,
 		sessionid = :sessionid,
 		termid = :termid';
@@ -349,6 +463,7 @@ if (isset($_GET['addform']))
     $s->bindValue(':regnumber', $_POST['regnumber']);
     $s->bindValue(':gender', $_POST['gender']);
     $s->bindValue(':dob', $_POST['dob']);
+	$s->bindValue(':image', $file);
 	$s->bindValue(':classid', $_POST['classes']);
 	$s->bindValue(':sessionid', $_POST['sessions']);
 	$s->bindValue(':termid', $_POST['terms']);
@@ -356,15 +471,12 @@ if (isset($_GET['addform']))
   }
   catch (PDOException $e)
   {
-    //$error = 'Error Adding User';
-    $error=$e;
+    $error = 'Error Adding User '.$e;
     include 'error.html.php';
     exit();
   }
 
   $studentid = $pdo->lastInsertId();
-
- 
   if (isset($_POST['subjects']) && isset($_POST['score']))
   {
      for ( $i=0; $i < count($_POST['subjects']); $i++)
@@ -399,21 +511,73 @@ if (isset($_GET['addform']))
 			  exit();    
 			}  
 	} 
+  }
+  
+ // assign disposition grades
+ if (isset($_POST['dispositions']))
+  {
+     for ( $i=0; $i < count($_POST['dispositions']); $i++)
+    {
+      try
+      {
+        $sql = 'INSERT INTO studentdisposition SET
+           studentid = :studentid,
+		   dispositionid = :dispositionid,
+		   grade = :termid';     		   
+		   $s = $pdo->prepare($sql);
+		   $s->bindValue(':studentid', $studentid);
+		   $s->bindValue(':dispositionid',  $_POST['dispositions'][$i]);
+		   $s->bindValue(':dgrades', $_POST['dgrades'][$i]);
+		   
+		   $s->execute();
+		   } catch (PDOException $e){
+			  $error = 'Error assigning disposition grade to student.'.$e;
+			  include 'error.html.php';
+			  exit();    
+			}  
+	} 
+ 
+ } 
+ 
+ // assign skill grades
+ if (isset($_POST['skills']))
+  {
+     for ( $i=0; $i < count($_POST['skills']); $i++)
+    {
+      try
+      {
+        $sql = 'INSERT INTO studentskill SET
+           studentid = :studentid,
+		   skillid = :skillid,
+		   grade = :termid';     		   
+		   $s = $pdo->prepare($sql);
+		   $s->bindValue(':studentid', $studentid);
+		   $s->bindValue(':skillid',  $_POST['skills'][$i]);
+		   $s->bindValue(':sgrades', $_POST['sgrades'][$i]);
+		   
+		   $s->execute();
+		   } catch (PDOException $e){
+			  $error = 'Error assigning skill grade to student.'.$e;
+			  include 'error.html.php';
+			  exit();    
+			}  
+	} 
+ 
  } 
   //header('Location: .');
   $message = 'Student Registered Successfully';
   $link = '.';
   include 'success.html.php';
-  //exit();
+  exit();
   }
-  
+ 
   if (isset($_POST['action']) and $_POST['action'] == 'Update'){ 
   
   include  '../../includes/db.inc.php';
   
   try {   
   
-  $sql = 'SELECT id, surname, firstname, othername, regnumber, parentphone, gender, dob, date, classid, sessionid, termid FROM student WHERE id = :id and deleted=0';
+  $sql = 'SELECT id, surname, firstname, othername, regnumber, parentphone, gender, dob, date, image, classid, sessionid, termid FROM student WHERE id = :id and deleted=0';
   $s = $pdo->prepare($sql);
   $s->bindValue(':id', $_POST['id']);
   $s->execute(); 
@@ -433,13 +597,14 @@ if (isset($_GET['addform']))
   $classid = $row['classid'];
   $gender = $row['gender'];
   $date = $row['date'];
+  $image = $row['image'];
   $dob = $row['dob'];
   $sessionid = $row['sessionid'];
   $termid = $row['termid'];
   $id = $row['id'];
   $button = 'Update';
   
-  // Get list of subject and score assigned to this users
+  // Get list of subject and score assigned to this student
   try { 
   $sql = 'SELECT subjectid, score, test1, test2 FROM studentsubject WHERE studentid = :id and classid=:classid and sessionid=:sessionid and termid=:termid';
   $s = $pdo->prepare($sql);
@@ -459,24 +624,68 @@ if (isset($_GET['addform']))
 			$test1s[] = $row['test1'];
 	        $test2s[] = $row['test2'];
 			$show = 1;
-	 }
-	  if($show ==0 ){
+	  }
+	  if($show == 0 ){
 	  $scores=0;
 	  $test1s=0;
 	  $test2s=0;
-	 
 	  }
-	}
+	} 
   }catch (PDOException $e) { 
   $error = 'Error fetching list of assigned subjects.';
   include 'error.html.php';
   exit();
   }
  
-	   // Build the list of all subjects
-	   try {  
+  // Get list of disposition and grade assigned to this student
+  try { 
+  $sql = 'SELECT dispositionid, grade  FROM studentdisposition WHERE studentid = :id';
+  $s = $pdo->prepare($sql);
+  $s->bindValue(':id', $id);
+  $assigneddispositions = array();
+  $dgrades = array();
+  $show = 0;
+  if($s->execute()){
+	  foreach ($s as $row) {
+			$assigneddispositions[] = $row['dispositionid'];
+			$dgrades[] = $row['grade'];
+			$show = 1;
+	 }
+	 if($show == 0 ){
+	  $dgrades = 0;
+	  }
+	}
+  }catch (PDOException $e) { 
+  $error = 'Error fetching list of assigned disposition grade.';
+  include 'error.html.php';
+  exit();
+  }
+  // Get list of skill and grade assigned to this student
+  try { 
+  $sql = 'SELECT skillid, grade  FROM studentskill WHERE studentid = :id';
+  $s = $pdo->prepare($sql);
+  $s->bindValue(':id', $id);
+  $assignedskills = array();
+  $show = 0;
+  if($s->execute()){
+	  foreach ($s as $row) {
+			$assignedskills[] = $row['skillid'];
+			$sgrades[] = $row['grade'];
+			$show = 1;
+	 }
+	 if($show == 0 ){
+	  $sgrades = 0;
+	  }
+	}
+  }catch (PDOException $e) { 
+  $error = 'Error fetching list of assigned disposition grade.';
+  include 'error.html.php';
+  exit();
+  }
+// Build the list of all subjects
+  try {  
 	   
-	   $result = $pdo->query('SELECT id, name FROM subject order by name');
+	   $result = $pdo->query('SELECT id, name FROM subject');
 	   } catch (PDOException $e)
 	   {
 		   $error = 'Error fetching list of sujects.';
@@ -488,6 +697,40 @@ if (isset($_GET['addform']))
       'id' => $row['id'],
       'name' => $row['name'],
       'selected' => in_array($row['id'], $selectedSubjects));
+  }
+  
+  // Build the list of all dispositions
+  try {  
+	   
+	   $result = $pdo->query('SELECT id, title FROM disposition');
+	   } catch (PDOException $e)
+	   {
+		   $error = 'Error fetching list of dispositions.';
+		   include 'error.html.php';
+		   exit();
+		   }
+		   foreach ($result as $row){  
+		   $dispositions[] = array(
+      'id' => $row['id'],
+      'title' => $row['title'],
+      'selected' => in_array($row['id'], $assigneddispositions));
+  }
+  
+  // Build the list of all skills
+  try {  
+	   
+	   $result = $pdo->query('SELECT id, title FROM skill');
+	   } catch (PDOException $e)
+	   {
+		   $error = 'Error fetching list of dispositions.';
+		   include 'error.html.php';
+		   exit();
+		   }
+		   foreach ($result as $row){  
+		   $skills[] = array(
+      'id' => $row['id'],
+      'title' => $row['title'],
+      'selected' => in_array($row['id'], $assignedskills));
   }
 
 // Get list of class assigned to this student
@@ -626,9 +869,30 @@ if (isset($_GET['addform']))
 if (isset($_GET['updateform']))
 {
   include '../../includes/db.inc.php';
-
+	
   try
   {
+	  // check for student image/photo to register
+	$img = $_POST['image'];
+	//echo $img;
+	$photopath = substr($img,0,7);
+	//echo $photopath;
+    $folderPath = "upload/";
+	if ($photopath == $folderPath){
+		$file = $img;
+	}else{
+    $image_parts = explode(";base64,", $img);
+    $image_type_aux = explode("image/", $image_parts[0]);
+    $image_type = $image_type_aux[1];
+  
+    $image_base64 = base64_decode($image_parts[1]);
+    $fileName = uniqid() . '.png';
+  
+    $file = $folderPath . $fileName;
+    file_put_contents($file, $image_base64);
+	}
+	//echo $file;
+    //print_r($fileName);
     $sql = 'UPDATE student SET
         surname = :surname,
 		firstname = :firstname,
@@ -636,6 +900,7 @@ if (isset($_GET['updateform']))
         parentphone = :parentphone,
 		regnumber = :regnumber,
         dob = :dob,
+		image = :image,
         gender = :gender,
         classid = :classid,
 		sessionid = :sessionid,
@@ -650,6 +915,7 @@ if (isset($_GET['updateform']))
     $s->bindValue(':regnumber', $_POST['regnumber']);
     $s->bindValue(':gender', $_POST['gender']);
     $s->bindValue(':dob', $_POST['dob']);
+	$s->bindValue(':image', $file);
 	$s->bindValue(':classid', $_POST['classes']);
 	$s->bindValue(':sessionid', $_POST['sessions']);
 	$s->bindValue(':termid', $_POST['terms']);
@@ -663,6 +929,7 @@ if (isset($_GET['updateform']))
     exit();
   }
 
+ // delete assigned subject in order to reset it
    try
   {
     $sql = 'DELETE FROM studentsubject WHERE studentid = :id';
@@ -677,6 +944,34 @@ if (isset($_GET['updateform']))
     exit();
   }
 
+// delete assigned dispositions in order to reset it
+   try
+  {
+    $sql = 'DELETE FROM studentdisposition WHERE studentid = :id';
+    $s = $pdo->prepare($sql);
+    $s->bindValue(':id', $_POST['id']);
+    $s->execute();
+  }
+  catch (PDOException $e)
+  {
+    $error = 'Error removing ssigned dispositions.';
+    include 'error.html.php';
+    exit();
+  }
+// delete assigned skill in order to reset it
+   try
+  {
+    $sql = 'DELETE FROM studentskill WHERE studentid = :id';
+    $s = $pdo->prepare($sql);
+    $s->bindValue(':id', $_POST['id']);
+    $s->execute();
+  }
+  catch (PDOException $e)
+  {
+    $error = 'Error removing assigned skills.';
+    include 'error.html.php';
+    exit();
+  }
 
   if (isset($_POST['subjects']) && isset($_POST['scores']))
   {
@@ -713,11 +1008,62 @@ if (isset($_GET['updateform']))
 			}  
 	} 
  } 
+  // assign disposition grades
+ if (isset($_POST['dispositions']))
+  {
+     for ( $i=0; $i < count($_POST['dispositions']); $i++)
+    {
+      try
+      {
+        $sql = 'INSERT INTO studentdisposition SET
+           studentid = :studentid,
+		   dispositionid = :dispositionid,
+		   grade = :grade';     		   
+		   $s = $pdo->prepare($sql);
+		   $s->bindValue(':studentid',  $_POST['id']);
+		   $s->bindValue(':dispositionid',  $_POST['dispositions'][$i]);
+		   $s->bindValue(':grade', $_POST['dgrades'][$i]);
+		   
+		   $s->execute();
+		   } catch (PDOException $e){
+			  $error = 'Error assigning disposition grade to student.'.$e;
+			  include 'error.html.php';
+			  exit();    
+			}  
+	} 
+ 
+ } 
+ 
+ // assign skill grades
+ if (isset($_POST['skills']))
+  {
+     for ( $i=0; $i < count($_POST['skills']); $i++)
+    {
+      try
+      {
+        $sql = 'INSERT INTO studentskill SET
+           studentid = :studentid,
+		   skillid = :skillid,
+		   grade = :grade';     		   
+		   $s = $pdo->prepare($sql);
+		   $s->bindValue(':studentid', $_POST['id']);
+		   $s->bindValue(':skillid',  $_POST['skills'][$i]);
+		   $s->bindValue(':grade', $_POST['sgrades'][$i]);
+		   
+		   $s->execute();
+		   } catch (PDOException $e){
+			  $error = 'Error assigning skill grade to student.'.$e;
+			  include 'error.html.php';
+			  exit();    
+			}  
+	} 
+ 
+ } 
   //header('Location: .');
   $message = 'Your Change(s) is Successful';
   $link = '.';
   include 'success.html.php';
-  //exit();
+  exit();
 }
 
 //Terminal Report
@@ -749,12 +1095,12 @@ if (isset($_GET['terminalreport']))
   }
   include 'reportheader.html.php';
  
- foreach($s as $r) {
-	 $theid = $r['id'];
+ foreach($s as $studentid) {
+	 $theid = $studentid['id'];
 	 
 	 try {   
   
-  $sql = 'SELECT id, surname, firstname, othername, regnumber, classid, sessionid, termid FROM student WHERE id = :id and deleted=0';
+  $sql = 'SELECT id, surname, firstname, othername, regnumber, classid, sessionid, termid, image FROM student WHERE id = :id and deleted=0';
   $s = $pdo->prepare($sql);
   $s->bindValue(':id', $theid);
   $s->execute(); 
@@ -770,252 +1116,9 @@ if (isset($_GET['terminalreport']))
   $classid = $row['classid'];
   $sessionid = $row['sessionid'];
   $termid = $row['termid'];
+  $photo = $row['image'];
   $id = $row['id'];
   
-  if($termid > 2){
-	  
-	  // Get list of subject and score assigned to this users for current term
-  try { 
-  //get date
-  $sql = 'SELECT date FROM studentsubject WHERE studentsubject.regnumber = :regnumber and classid=:classid and sessionid=:sessionid and termid=:termid';
-  $s = $pdo->prepare($sql);
-  $s->bindValue(':regnumber', $regnumber);
-  $s->bindValue(':classid', $classid);
-  $s->bindValue(':sessionid', $sessionid);
-  $s->bindValue(':termid', $termid);
-  $s->execute();
-  $rowdate = $s->fetch();
-  $date = $rowdate['date'];
-  
-  $sql = 'SELECT subjectid, score, test1, test2, (test1+test2+score) as   total,  subject.name as subject FROM studentsubject 
-  inner join subject on subject.id = subjectid WHERE regnumber = :regnumber and classid=:classid and sessionid=:sessionid and termid=:termid order by subject';
-  $s = $pdo->prepare($sql);
-  $s->bindValue(':regnumber', $regnumber);
-  $s->bindValue(':classid', $classid);
-  $s->bindValue(':sessionid', $sessionid);
-  $s->bindValue(':termid', $termid);
-  $s->execute();
-  }catch (PDOException $e) { 
-  $error = 'Error fetching list of assigned subjects.';
-  include 'error.html.php';
-  exit();
-  }
-  
- $items3 = array();
-foreach ($s as $row)
-{
-  $subjects3[] = array('subjectid' => $row['subjectid'], 'score' => $row['score'], 'test1' => $row['test1'], 'test2' => $row['test2'], 'total' => $row['total'], 'subject' => $row['subject']);
-      array_push($items3,$row['subjectid']);
-    } 
-     //$items = $sale['pid'];
-     $cart3 = array();
-     $total3 = 0;
-           //$subtotal=0; 
-           foreach ($items3 as $id)
-          {
-           foreach ($subjects3 as $subject)
-           {
-              if ($subject['subjectid'] == $id)
-           {
-              $cart3[] = $subject;
-              $total3 += $subject['total'];
-             break;
-           }
-         }
-       } 
-	  
-	  // Get list of subject and score assigned to this student for second term
-  try { 
-  $sql = 'SELECT subjectid, score, test1, test2, (test1+test2+score) as   total, date,  subject.name as subject FROM studentsubject 
-  inner join subject on subject.id = subjectid WHERE regnumber = :regnumber and classid=:classid and sessionid=:sessionid and termid=:termid order by subject';
-  $s = $pdo->prepare($sql);
-  $s->bindValue(':regnumber', $regnumber);
-  $s->bindValue(':classid', $classid);
-  $s->bindValue(':sessionid', $sessionid);
-  $s->bindValue(':termid', 2);
-  $s->execute();
-  }catch (PDOException $e) { 
-  $error = 'Error fetching list of assigned subjects.';
-  include 'error.html.php';
-  exit();
-  }
-  
- $items2 = array();
- 
-foreach ($s as $row)
-{
-  $subjects2[] = array('subjectid' => $row['subjectid'], 'score' => $row['score'], 'test1' => $row['test1'], 'test2' => $row['test2'], 'total' => $row['total'], 'date' => $row['date'], 'subject' => $row['subject']);
-      array_push($items2,$row['subjectid']);
-    } 
-	
-     //$items = $sale['pid'];
-     $cart2 = array();
-     $total2 = 0;
-           //$subtotal=0; 
-           foreach ($items2 as $id)
-          {
-           foreach ($subjects2 as $subject)
-           {
-              if ($subject['subjectid'] == $id)
-           {
-              $cart2[] = $subject;
-              $total2 += $subject['total'];
-             break;
-           }
-         }
-       } 
-
-	   // Get list of subject and score assigned to this users for first term
-  try { 
-  $sql = 'SELECT subjectid, score, test1, test2, (test1+test2+score) as   total, subject.name as subject FROM 
-  studentsubject inner join subject on subject.id = subjectid WHERE regnumber = :regnumber and classid=:classid 
-  and sessionid=:sessionid and termid=:termid order by subject';
-  $s = $pdo->prepare($sql);
-  $s->bindValue(':regnumber', $regnumber);
-  $s->bindValue(':classid', $classid);
-  $s->bindValue(':sessionid', $sessionid);
-  $s->bindValue(':termid', 1);
-  $s->execute();
-  }catch (PDOException $e) { 
-  $error = 'Error fetching list of assigned subjects.';
-  include 'error.html.php';
-  exit();
-  }
-  
- $items1 = array();
-foreach ($s as $row)
-{
-  $subjects1[] = array('subjectid' => $row['subjectid'], 'score' => $row['score'], 'test1' => $row['test1'], 'test2' => $row['test2'], 'total' => $row['total'], 'subject' => $row['subject']);
-      array_push($items1,$row['subjectid']);
-    }
-     //$items = $sale['pid'];
-     $cart1 = array();
-     $total1 = 0;
-           //$subtotal=0; 
-           foreach ($items1 as $id)
-          {
-           foreach ($subjects1 as $subject)
-           {
-              if ($subject['subjectid'] == $id)
-           {
-              $cart1[] = $subject;
-              $total1 += $subject['total'];
-             break;
-           }
-         }
-       } 
-	   
-	  //get sum of totals for averages
-	  $overallaverage =0;
-	  $theaverage = array();
-	  for ($j=0; $j<count($cart3); $j++){
-		   array_push($theaverage,($cart1[$j]['total']+$cart2[$j]['total']+$cart3[$j]['total'])/3);
-		   $overallaverage += $theaverage[$j];
-	  }
-	  
-	   //get average for this student
-	  try { 
-  $sql = 'SELECT  avg(test1+test2+score) as thisaverage FROM studentsubject WHERE regnumber = :regnumber and classid=:classid';
-  $s = $pdo->prepare($sql);
-  $s->bindValue(':regnumber', $regnumber);
-  $s->bindValue(':classid', $classid);
-  $s->execute();
-  $row = $s->fetch();
-  $thisAverage = round($row['thisaverage'],2);
-   //echo $thisAverage;
-  
-  }catch (PDOException $e) { 
-  $error = 'Error fetching the average for this student.'.$e;
-  include 'error.html.php';
-  exit();
-  }
-  
-  //get all averages in a class
-
-	  try { 
-  $sql = 'SELECT regnumber,  avg(test1+test2+score) as allaverage FROM studentsubject WHERE classid=:classid group by regnumber order by allaverage DESC';
-  $s = $pdo->prepare($sql);
-  //$s->bindValue(':regnumber', $regnumber);
-  $s->bindValue(':classid', $classid);
-  $s->execute();
-  $allAverage = Array();
-  foreach($s as $row){
-  array_push($allAverage, round($row['allaverage'],2));
-  }
-  $numberInClass = count($allAverage);
-  //echo $numberInClass;
-  //echo $allAverage[0];
-  //echo $allAverage[1];
-   //get the position
- for($position=0; $position < count($allAverage); $position++){
-	 if($allAverage[$position] == $thisAverage){
-		  $position += 1;
-		  //echo $position;
-		 break;
-	 }
- }
- 
-   
-  }catch (PDOException $e) { 
-  $error = 'Error fetching the average for this student.'.$e;
-  include 'error.html.php';
-  exit();
-  }
-	    $back ='.';
-       // get class name
-       try{
-	$sql = 'SELECT name FROM class WHERE id = :classid';
-    $s = $pdo->prepare($sql);
-    $s->bindValue(':classid', $classid);
-    $s->execute();
-  }
-  catch (PDOException $e)
-  {
-    $error = 'Error fetching class.';
-    include 'error.html.php';
-    exit();
-  }
-   $row = $s->fetch();
-   $class = $row['name'];
-   
-   //get session
-    try{
-	$sql = 'SELECT name FROM session WHERE id = :sessionid';
-    $s = $pdo->prepare($sql);
-    $s->bindValue(':sessionid', $sessionid);
-    $s->execute();
-  }
-  catch (PDOException $e)
-  {
-    $error = 'Error fetching session.';
-    include 'error.html.php';
-    exit();
-  }
-   $row = $s->fetch();
-   $session = $row['name'];
-   
-   //get term
-    try{
- $sql = 'SELECT name FROM term WHERE id = :termid';
-    $s = $pdo->prepare($sql);
-    $s->bindValue(':termid', $termid);
-    $s->execute();
-  }
-  catch (PDOException $e)
-  {
-    $error = 'Error fetching class.';
-    include 'error.html.php';
-    exit();
-  }
-   $row = $s->fetch();
-   $term = $row['name'];
-   //reset the subjects
-	unset($subjects3);
-	unset($subjects2);
-	unset($subjects1);
-   include 'finalreportdiv.html.php';
-  }
-  else{
 	 
   // Get list of subject and score assigned to this student for current term
   try { 
@@ -1165,16 +1268,95 @@ foreach ($s as $row)
   include 'error.html.php';
   exit();
   }
+  
+     // Get list of disposition and grade assigned to this student
+  try { 
+  $sql = 'SELECT dispositionid, grade  FROM studentdisposition WHERE studentid = :id';
+  $s = $pdo->prepare($sql);
+  $s->bindValue(':id', $theid);
+  $assigneddispositions = array();
+  $dgrades = array();
+  $show = 0;
+  if($s->execute()){
+	  foreach ($s as $row) {
+			$assigneddispositions[] = $row['dispositionid'];
+			$dgrades[] = $row['grade'];
+			$show = 1;
+	 }
+	 if($show == 0 ){
+	  $dgrades = 0;
+	  }
+	}
+  }catch (PDOException $e) { 
+  $error = 'Error fetching list of assigned disposition grade.';
+  include 'error.html.php';
+  exit();
+  }
+  // Get list of skill and grade assigned to this student
+  try { 
+  $sql = 'SELECT skillid, grade  FROM studentskill WHERE studentid = :id';
+  $s = $pdo->prepare($sql);
+  $s->bindValue(':id', $theid);
+  $assignedskills = array();
+  $show = 0;
+  if($s->execute()){
+	  foreach ($s as $row) {
+			$assignedskills[] = $row['skillid'];
+			$sgrades[] = $row['grade'];
+			$show = 1;
+	 }
+	 if($show == 0 ){
+	  $sgrades = 0;
+	  }
+	}
+  }catch (PDOException $e) { 
+  $error = 'Error fetching list of assigned disposition grade.';
+  include 'error.html.php';
+  exit();
+  }
+  // Build the list of all dispositions
+  try {  
+	   
+	   $result = $pdo->query('SELECT id, title FROM disposition');
+	   } catch (PDOException $e)
+	   {
+		   $error = 'Error fetching list of dispositions.';
+		   include 'error.html.php';
+		   exit();
+		   }
+		   foreach ($result as $row){  
+		   $dispositions[] = array(
+      'id' => $row['id'],
+      'title' => $row['title'],
+      'selected' => in_array($row['id'], $assigneddispositions));
+  }
+  
+  // Build the list of all skills
+  try {  
+	   
+	   $result = $pdo->query('SELECT id, title FROM skill');
+	   } catch (PDOException $e)
+	   {
+		   $error = 'Error fetching list of dispositions.';
+		   include 'error.html.php';
+		   exit();
+		   }
+		   foreach ($result as $row){  
+		   $skills[] = array(
+      'id' => $row['id'],
+      'title' => $row['title'],
+      'selected' => in_array($row['id'], $assignedskills));
+  }
 	$back='.';
-	//reset the subjects
+	// reset the subjects, dispositions and skills after each iteration
 	//unset($subjects);
 	array_splice($subjects, 0);
-	include 'reportdiv.html.php';
-	
-	  
-  }
-
+	include 'reportdiv.html.php'; 
+	// reset the  dispositions and skills after each iteration
+	unset($dispositions);
+	unset($skills);
  }
+   
   include 'reportfooter.html.php';
 	exit();
   
@@ -1188,7 +1370,7 @@ if (isset($_POST['action']) and $_POST['action'] == 'See Report')
   
   try {   
   
-  $sql = 'SELECT id, surname, firstname, othername, regnumber, classid, sessionid, termid FROM student WHERE id = :id and deleted=0';
+  $sql = 'SELECT id, surname, firstname, othername, regnumber, classid, sessionid, termid, image FROM student WHERE id = :id and deleted=0';
   $s = $pdo->prepare($sql);
   $s->bindValue(':id', $_POST['id']);
   $s->execute(); 
@@ -1204,251 +1386,9 @@ if (isset($_POST['action']) and $_POST['action'] == 'See Report')
   $classid = $row['classid'];
   $sessionid = $row['sessionid'];
   $termid = $row['termid'];
+  $photo = $row['image'];
   $id = $row['id'];
-  
-  if($termid > 2){
-	  
-	  // Get list of subject and score assigned to this users for current term
-  try { 
-  //get date
-  $sql = 'SELECT date FROM studentsubject WHERE studentsubject.regnumber = :regnumber and classid=:classid and sessionid=:sessionid and termid=:termid';
-  $s = $pdo->prepare($sql);
-  $s->bindValue(':regnumber', $regnumber);
-  $s->bindValue(':classid', $classid);
-  $s->bindValue(':sessionid', $sessionid);
-  $s->bindValue(':termid', $termid);
-  $s->execute();
-  $rowdate = $s->fetch();
-  $date = $rowdate['date'];
-  $sql = 'SELECT subjectid, score, test1, test2, (test1+test2+score) as   total,  subject.name as subject FROM studentsubject 
-  inner join subject on subject.id = subjectid WHERE regnumber = :regnumber and classid=:classid and sessionid=:sessionid 
-  and termid=:termid order by subject';
-  $s = $pdo->prepare($sql);
-  $s->bindValue(':regnumber', $regnumber);
-  $s->bindValue(':classid', $classid);
-  $s->bindValue(':sessionid', $sessionid);
-  $s->bindValue(':termid', $termid);
-  $s->execute();
-  }catch (PDOException $e) { 
-  $error = 'Error fetching list of assigned subjects.'.$e;
-  include 'error.html.php';
-  exit();
-  }
-  
- $items3 = array();
-foreach ($s as $row)
-{
-  $subjects3[] = array('subjectid' => $row['subjectid'], 'score' => $row['score'], 'test1' => $row['test1'], 'test2' => $row['test2'], 'total' => $row['total'], 'subject' => $row['subject']);
-      array_push($items3,$row['subjectid']);
-    } 
-     //$items = $sale['pid'];
-     $cart3 = array();
-     $total3 = 0;
-           //$subtotal=0; 
-           foreach ($items3 as $id)
-          {
-           foreach ($subjects3 as $subject)
-           {
-              if ($subject['subjectid'] == $id)
-           {
-              $cart3[] = $subject;
-              $total3 += $subject['total'];
-             break;
-           }
-         }
-       } 
-	  
-	  // Get list of subject and score assigned to this users for second term
-  try { 
-  $sql = 'SELECT subjectid, score, test1, test2, (test1+test2+score) as   total,  subject.name as subject 
-  FROM studentsubject inner join subject on subject.id = subjectid WHERE regnumber = :regnumber and classid=:classid 
-  and sessionid=:sessionid and termid=:termid order by subject';
-  $s = $pdo->prepare($sql);
-  $s->bindValue(':regnumber', $regnumber);
-  $s->bindValue(':classid', $classid);
-  $s->bindValue(':sessionid', $sessionid);
-  $s->bindValue(':termid', 2);
-  $s->execute();
-  }catch (PDOException $e) { 
-  $error = 'Error fetching list of assigned subjects.';
-  include 'error.html.php';
-  exit();
-  }
-  
- $items2 = array();
- 
-foreach ($s as $row)
-{
-  $subjects2[] = array('subjectid' => $row['subjectid'], 'score' => $row['score'], 'test1' => $row['test1'], 'test2' => $row['test2'], 'total' => $row['total'], 'subject' => $row['subject']);
-      array_push($items2,$row['subjectid']);
-    } 
-	
-     //$items = $sale['pid'];
-     $cart2 = array();
-     $total2 = 0;
-           //$subtotal=0; 
-           foreach ($items2 as $id)
-          {
-           foreach ($subjects2 as $subject)
-           {
-              if ($subject['subjectid'] == $id)
-           {
-              $cart2[] = $subject;
-              $total2 += $subject['total'];
-             break;
-           }
-         }
-       } 
-
-	   // Get list of subject and score assigned to this users for first term
-  try { 
-  $sql = 'SELECT subjectid, score, test1, test2, (test1+test2+score) as   total,  subject.name as subject 
-  FROM studentsubject inner join subject on subject.id = subjectid WHERE regnumber = :regnumber and 
-  classid=:classid and sessionid=:sessionid and termid=:termid order by subject';
-  $s = $pdo->prepare($sql);
-  $s->bindValue(':regnumber', $regnumber);
-  $s->bindValue(':classid', $classid);
-  $s->bindValue(':sessionid', $sessionid);
-  $s->bindValue(':termid', 1);
-  $s->execute();
-  }catch (PDOException $e) { 
-  $error = 'Error fetching list of assigned subjects.';
-  include 'error.html.php';
-  exit();
-  }
-  
- $items1 = array();
-foreach ($s as $row)
-{
-  $subjects1[] = array('subjectid' => $row['subjectid'], 'score' => $row['score'], 'test1' => $row['test1'], 'test2' => $row['test2'], 'total' => $row['total'], 'subject' => $row['subject']);
-      array_push($items1,$row['subjectid']);
-    }
-     //$items = $sale['pid'];
-     $cart1 = array();
-     $total1 = 0;
-           //$subtotal=0; 
-           foreach ($items1 as $id)
-          {
-           foreach ($subjects1 as $subject)
-           {
-              if ($subject['subjectid'] == $id)
-           {
-              $cart1[] = $subject;
-              $total1 += $subject['total'];
-             break;
-           }
-         }
-       } 
-	   
-	  //get sum of totals for averages
-	  $overallaverage =0;
-	  $theaverage = array();
-	  for ($j=0; $j<count($cart3); $j++){
-		   array_push($theaverage,($cart1[$j]['total']+$cart2[$j]['total']+$cart3[$j]['total'])/3);
-		   $overallaverage += $theaverage[$j];
-	  }
-	  
-	   //get average for this student
-	  try { 
-  $sql = 'SELECT  avg(test1+test2+score) as thisaverage FROM studentsubject WHERE regnumber = :regnumber and classid=:classid';
-  $s = $pdo->prepare($sql);
-  $s->bindValue(':regnumber', $regnumber);
-  $s->bindValue(':classid', $classid);
-  $s->execute();
-  $row = $s->fetch();
-  $thisAverage = round($row['thisaverage'],2);
-   //echo $thisAverage;
-  
-  }catch (PDOException $e) { 
-  $error = 'Error fetching the average for this student.'.$e;
-  include 'error.html.php';
-  exit();
-  }
-  
-  //get all averages in a class
-
-	  try { 
-  $sql = 'SELECT regnumber, avg(test1+test2+score) as allaverage FROM studentsubject WHERE classid=:classid group by regnumber order by allaverage DESC';
-  $s = $pdo->prepare($sql);
-  //$s->bindValue(':regnumber', $regnumber);
-  $s->bindValue(':classid', $classid);
-  $s->execute();
-  $allAverage = Array();
-  foreach($s as $row){
-  array_push($allAverage, round($row['allaverage'],2));
-  }
-  $numberInClass = count($allAverage);
-  //echo $numberInClass;
-  //echo $allAverage[0];
-  //echo $allAverage[1];
-   //get the position
- for($position=0; $position < count($allAverage); $position++){
-	 if($allAverage[$position] == $thisAverage){
-		  $position += 1;
-		  //echo $position;
-		 break;
-	 }
- }
- }catch (PDOException $e) { 
-  $error = 'Error fetching the average for this student.'.$e;
-  include 'error.html.php';
-  exit();
-  }
-	    $back ='.';
-       // get class name
-       try{
- $sql = 'SELECT name FROM class WHERE id = :classid';
-    $s = $pdo->prepare($sql);
-    $s->bindValue(':classid', $classid);
-    $s->execute();
-  }
-  catch (PDOException $e)
-  {
-    $error = 'Error fetching class.';
-    include 'error.html.php';
-    exit();
-  }
-   $row = $s->fetch();
-   $class = $row['name'];
    
-   //get session
-    try{
- $sql = 'SELECT name FROM session WHERE id = :sessionid';
-    $s = $pdo->prepare($sql);
-    $s->bindValue(':sessionid', $sessionid);
-    $s->execute();
-  }
-  catch (PDOException $e)
-  {
-    $error = 'Error fetching session.';
-    include 'error.html.php';
-    exit();
-  }
-   $row = $s->fetch();
-   $session = $row['name'];
-   
-   //get term
-    try{
- $sql = 'SELECT name FROM term WHERE id = :termid';
-    $s = $pdo->prepare($sql);
-    $s->bindValue(':termid', $termid);
-    $s->execute();
-  }
-  catch (PDOException $e)
-  {
-    $error = 'Error fetching class.';
-    include 'error.html.php';
-    exit();
-  }
-   $row = $s->fetch();
-   $term = $row['name'];
- 
-   include 'finalreport.html.php';
-   exit();
-  }
-  else{
-	  
-	 
   // Get list of subject and score assigned to this student for current term
   try { 
   //get date
@@ -1597,11 +1537,88 @@ foreach ($s as $row)
   include 'error.html.php';
   exit();
   }
+   // Get list of disposition and grade assigned to this student
+  try { 
+  $sql = 'SELECT dispositionid, grade  FROM studentdisposition WHERE studentid = :id';
+  $s = $pdo->prepare($sql);
+  $s->bindValue(':id', $_POST['id']);
+  $assigneddispositions = array();
+  $dgrades = array();
+  $show = 0;
+  if($s->execute()){
+	  foreach ($s as $row) {
+			$assigneddispositions[] = $row['dispositionid'];
+			$dgrades[] = $row['grade'];
+			$show = 1;
+	 }
+	 if($show == 0 ){
+	  $dgrades = 0;
+	  }
+	}
+  }catch (PDOException $e) { 
+  $error = 'Error fetching list of assigned disposition grade.';
+  include 'error.html.php';
+  exit();
+  }
+  // Get list of skill and grade assigned to this student
+  try { 
+  $sql = 'SELECT skillid, grade  FROM studentskill WHERE studentid = :id';
+  $s = $pdo->prepare($sql);
+  $s->bindValue(':id', $_POST['id']);
+  $assignedskills = array();
+  $show = 0;
+  if($s->execute()){
+	  foreach ($s as $row) {
+			$assignedskills[] = $row['skillid'];
+			$sgrades[] = $row['grade'];
+			$show = 1;
+	 }
+	 if($show == 0 ){
+	  $sgrades = 0;
+	  }
+	}
+  }catch (PDOException $e) { 
+  $error = 'Error fetching list of assigned disposition grade.';
+  include 'error.html.php';
+  exit();
+  }
+  // Build the list of all dispositions
+  try {  
+	   
+	   $result = $pdo->query('SELECT id, title FROM disposition');
+	   } catch (PDOException $e)
+	   {
+		   $error = 'Error fetching list of dispositions.';
+		   include 'error.html.php';
+		   exit();
+		   }
+		   foreach ($result as $row){  
+		   $dispositions[] = array(
+      'id' => $row['id'],
+      'title' => $row['title'],
+      'selected' => in_array($row['id'], $assigneddispositions));
+  }
+  
+  // Build the list of all skills
+  try {  
+	   
+	   $result = $pdo->query('SELECT id, title FROM skill');
+	   } catch (PDOException $e)
+	   {
+		   $error = 'Error fetching list of dispositions.';
+		   include 'error.html.php';
+		   exit();
+		   }
+		   foreach ($result as $row){  
+		   $skills[] = array(
+      'id' => $row['id'],
+      'title' => $row['title'],
+      'selected' => in_array($row['id'], $assignedskills));
+  }
+
 	$back='.';
 	include 'report.html.php';
 	exit();
-	  
-  }
 }
 
 //register student for another term
@@ -1611,7 +1628,7 @@ if (isset($_POST['action']) and $_POST['action'] == 'Register Another Term')
   
   try {   
   
-  $sql = 'SELECT id, surname, firstname, othername, regnumber, parentphone, gender, dob, date, classid, sessionid, termid FROM student WHERE id = :id and deleted=0';
+  $sql = 'SELECT id, surname, firstname, othername, regnumber, parentphone, gender, dob, date, image, classid, sessionid, termid FROM student WHERE id = :id and deleted=0';
   $s = $pdo->prepare($sql);
   $s->bindValue(':id', $_POST['id']);
   $s->execute(); 
@@ -1631,6 +1648,7 @@ if (isset($_POST['action']) and $_POST['action'] == 'Register Another Term')
   $classid = $row['classid'];
   $gender = $row['gender'];
   $date = $row['date'];
+  $image = $row['image'];
   $dob = $row['dob'];
   $sessionid = $row['sessionid'];
   $termid = $row['termid'];
@@ -1638,6 +1656,8 @@ if (isset($_POST['action']) and $_POST['action'] == 'Register Another Term')
   $scores = 0;
   $test1s = 0;
   $test2s = 0;
+  $dgrades = 0; //dispositions grades
+  $sgrades = 0; //skills grades
   $button = 'Register';
   
   // Get list of subject and score assigned to this users
@@ -1663,7 +1683,7 @@ if (isset($_POST['action']) and $_POST['action'] == 'Register Another Term')
 	   // Build the list of all subjects
 	   try {  
 	   
-	   $result = $pdo->query('SELECT id, name FROM subject order by name');
+	   $result = $pdo->query('SELECT id, name FROM subject');
 	   } catch (PDOException $e)
 	   {
 		   $error = 'Error fetching list of sujects.';
@@ -1805,7 +1825,47 @@ if (isset($_POST['action']) and $_POST['action'] == 'Register Another Term')
       'name' => $row['name'],
       'selected' => in_array($row['id'], $selectedTerm));
   }
+  
+  // Build the list of disposition
+  try
+  {
+    $result = $pdo->query('SELECT id, title FROM disposition order by title');
+  }
+  catch (PDOException $e)
+  {
+    $error = 'Error fetching list of disposition.';
+    include 'error.html.php';
+    exit();
+  }
 
+  foreach ($result as $row)
+  {
+    $dispositions[] = array(
+      'id' => $row['id'],
+      'title' => $row['title'],
+      'selected' => FALSE);
+  }
+  
+  // Build the list of skills
+  try
+  {
+    $result = $pdo->query('SELECT id, title FROM skill order by title');
+  }
+  catch (PDOException $e)
+  {
+    $error = 'Error fetching list of skill.';
+    include 'error.html.php';
+    exit();
+  }
+
+  foreach ($result as $row)
+  {
+    $skills[] = array(
+      'id' => $row['id'],
+      'title' => $row['title'],
+      'selected' => FALSE);
+  }
+  
  include 'form.html.php';
   exit();
 }
@@ -1830,16 +1890,34 @@ if (isset($_GET['anotherterm']))
   exit();
   }
   $row = $s->fetch();
-  if(count($row > 0 )){
+  if($row > 0){
 	$error = 'This student has already been registered for this term';
 	include 'error.html.php';
 	exit();
 	  
   }
-  
-
   try
   {
+	  // check for student image/photo to register
+	  $img = $_POST['image'];
+	//echo $img;
+	$photopath = substr($img,0,7);
+	//echo $photopath;
+    $folderPath = "upload/";
+	if ($photopath == $folderPath){
+		$file = $img;
+	}else{
+    $image_parts = explode(";base64,", $img);
+    $image_type_aux = explode("image/", $image_parts[0]);
+    $image_type = $image_type_aux[1];
+  
+    $image_base64 = base64_decode($image_parts[1]);
+    $fileName = uniqid() . '.png';
+  
+    $file = $folderPath . $fileName;
+    file_put_contents($file, $image_base64);
+	}
+	//echo $file;
     $sql = 'INSERT INTO student SET
         surname = :surname,
 		firstname = :firstname,
@@ -1847,6 +1925,7 @@ if (isset($_GET['anotherterm']))
         parentphone = :parentphone,
 		regnumber = :regnumber,
         dob = :dob,
+		image= :image,
         gender = :gender,
         date = CURDATE(),
         classid = :classid,
@@ -1860,6 +1939,7 @@ if (isset($_GET['anotherterm']))
     $s->bindValue(':regnumber', $_POST['regnumber']);
     $s->bindValue(':gender', $_POST['gender']);
     $s->bindValue(':dob', $_POST['dob']);
+	$s->bindValue(':image', $file);
 	$s->bindValue(':classid', $_POST['classes']);
 	$s->bindValue(':sessionid', $_POST['sessions']);
 	$s->bindValue(':termid', $_POST['terms']);
@@ -1874,8 +1954,6 @@ if (isset($_GET['anotherterm']))
   }
 
   $studentid = $pdo->lastInsertId();
-
- 
   if (isset($_POST['subjects']))
   {
     foreach ($_POST['subjects'] as $subject)
@@ -1908,15 +1986,13 @@ if (isset($_GET['anotherterm']))
   $message = 'Student Registered Successfully';
   $link = '.';
   include 'success.html.php';
-  //exit();
+  exit();
   }
   
 // delete a student
   if (isset($_POST['action']) and $_POST['action'] == 'Delete')
 {
-  include '../../includes/db.inc.php';
-
-  
+  include '../../includes/db.inc.php'; 
   // Delete the student
   try  {   
   $sql = 'UPDATE student SET deleted = :deleted WHERE id = :id';      
@@ -1943,8 +2019,7 @@ if (isset($_GET['anotherterm']))
 	if(isset($_SESSION['theclass']) && isset($_SESSION['thesession']) && isset($_SESSION['theterm'])){
 	$regnumber = $_POST['regnumbers'];
 	
-	
-	 // Get list of class assigned to this student
+	// Get list of class assigned to this student
  
  try
   {
@@ -2459,6 +2534,99 @@ if (isset($_GET['anotherterm']))
 
 	}
 	
+	
+// print student list
+	if(isset($_GET['studentlist'])){
+		include  '../../includes/db.inc.php';
+ 
+		if(isset($_SESSION['theclass']) && isset($_SESSION['thesession']) && isset($_SESSION['theterm'])){
+			$theclass = $_SESSION['theclass'];
+			$thesession = $_SESSION['thesession'];
+			$theterm = $_SESSION['theterm']; 
+		}else{
+			$theclass = $_SESSION['class'];
+			$thesession = 1;
+			$theterm = 1;
+ }
+		try {  
+	$result = $pdo->query('SELECT student.id as id, regnumber, surname, firstname, othername  FROM student WHERE classid ='.$theclass.' AND termid ='.$theterm.' AND sessionid = '.$thesession.' AND  student.deleted = 0');
+	}
+	catch (PDOException $e) { 
+		$error = 'Error fetching students from the database!'.$e;  
+		include 'error.html.php';   
+		exit(); 
+		}
+		foreach ($result as $row) {  
+		$students[] = array('id' => $row['id'], 'regnumber' => $row['regnumber'],'surname' => $row['surname'],'firstname' => $row['firstname'], 'othername' => $row['othername']);
+		}
+		
+	//get total number of students
+  try
+  {
+    $result = $pdo->query('SELECT count(id) as ntotal FROM student WHERE classid='.$_SESSION['theclass'].' AND sessionid='.$_SESSION['thesession'].' AND termid='.$_SESSION['theterm']);
+  }
+  catch (PDOException $e)
+  {
+    $error = 'Error fetching number of students.';
+    include 'error.html.php';
+    exit();
+  }
+
+  foreach ($result as $row)
+  {
+    $ntotal = $row['ntotal'];
+  }
+  // get class name
+       try{
+	$sql = 'SELECT name FROM class WHERE id = :classid';
+    $s = $pdo->prepare($sql);
+    $s->bindValue(':classid', $theclass);
+    $s->execute();
+  }
+  catch (PDOException $e)
+  {
+    $error = 'Error fetching class.';
+    include 'error.html.php';
+    exit();
+  }
+   $row = $s->fetch();
+   $class = $row['name'];
+   
+   //get session
+    try{
+	$sql = 'SELECT name FROM session WHERE id = :sessionid';
+    $s = $pdo->prepare($sql);
+    $s->bindValue(':sessionid', $thesession);
+    $s->execute();
+  }
+  catch (PDOException $e)
+  {
+    $error = 'Error fetching session.';
+    include 'error.html.php';
+    exit();
+  }
+   $row = $s->fetch();
+   $session = $row['name'];
+   
+   //get term
+    try{
+ $sql = 'SELECT name FROM term WHERE id = :termid';
+    $s = $pdo->prepare($sql);
+    $s->bindValue(':termid', $theterm);
+    $s->execute();
+  }
+  catch (PDOException $e)
+  {
+    $error = 'Error fetching class.';
+    include 'error.html.php';
+    exit();
+  }
+   $row = $s->fetch();
+   $term = $row['name'];
+		include 'studentlist.html.php';
+		exit();
+	}
+	
  // Display student list
  
  include  '../../includes/db.inc.php';
@@ -2472,10 +2640,7 @@ if (isset($_GET['anotherterm']))
 	$thesession = 1;
 	$theterm = 1;
  }
- 
-
- 
-  // Get list of class assigned to this student
+ // Get list of class assigned to this student
  
  try
   {

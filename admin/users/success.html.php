@@ -21,7 +21,7 @@
 
     <!-- Custom styles for this template -->
     
-    <link href="../../css/signin.css" rel="stylesheet">
+    <link href="../../css/style.css" rel="stylesheet">
 
     <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
     <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
@@ -39,7 +39,7 @@
       
       <div class="alert alert-success alert-dismissible " role="alert">
            <button type="button" class="close" data-dismiss="alert" aria-label="Close"> <span aria-hidden="true">&times;</span></button>
-           <strong><p><?php echo $message.'  '; ?><a href="<?php echo $link.'  '; ?>">Click here to continue</a></p></strong>
+           <strong><p style="text-align: center"><?php echo $message.'  '; ?><a href="<?php echo $link.'  '; ?>">Click here to continue</a></p></strong>
            </div>
   
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->

@@ -17,7 +17,7 @@
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
     <link href="../../css/bootstrap.min.css" rel="stylesheet">
-
+	<script src="../../js/webcam.min.js"></script>
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <link href="../../css/ie10-viewport-bug-workaround.css" rel="stylesheet">
 
@@ -86,12 +86,10 @@ var number;
                     </nav>
                 </div><!-- /.container-->
             </header> 
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-         <a href="."><img src="../../images/back.png" alt="backicon" /></a>
-         <ul>
-             <li> <?php htmlout($pageHeading); ?></li>
-         </ul>
-      
+        <div class="alert alert-success alert-dismissible fade show text-center" role="alert">
+        
+          <?php htmlout($pageHeading); ?>
+		  
         </div>
         
            
@@ -134,7 +132,7 @@ var number;
     <div class="col-md-6 mb-6">
       <label for="validationDefault06">Gender:</label>
      
-    <select name ="gender"id="inputState" class="form-control md-6" value="<?php htmlout($gender); ?>" required>
+    <select name ="gender" class="form-control md-6" value="<?php htmlout($gender); ?>" required>
     <option value="Male"<?php if ($gender == 'Male') echo 'selected = "selected"'; ?>>Male</option>
     <option value="Female"<?php if ($gender == 'Female') echo 'selected = "selected"'; ?>>Female</option>
     
@@ -146,7 +144,7 @@ var number;
     <div class="col-md-6 mb-6">
 	  <label for="class">Class:</label>
 	   
-        <select name="classes"  id="inputState" class="form-control md-3">
+        <select name="classes" class="form-control md-3">
           <option value="">Select one</option>
           <?php foreach ($classes as $class): ?>
             <option value="<?php htmlout($class['id']); ?>"<?php
@@ -165,16 +163,46 @@ var number;
     </div>
       </div>
 	  <div class="row">
-	   <div class="col-md-6 mb-6">
-	  
-	    </div>
-	  <div class="col-md-6 mb-6">
-	   <input class="btn btn-success form-control md-6" type="submit" value="<?php htmlout($button); ?>">
-	    </div>
+	   <input class="btn btn-success" id="center" type="submit" value="<?php htmlout($button); ?>">
 	  </div>
     </div><!-- /.showcase-left-->
 	<div class="showcase-right">
-			
+		<div class="upper-content">
+			<div class="content">
+		<div class="student-photo">
+			<img src="<?php if ($photo == ""){htmlout('https://via.placeholder.com/150');}else{ htmlout($photo);} ?>" />
+		</div> 
+		<button type="button" class="btn btn-secondary btn-sm" id="photo-btn" data-toggle="modal" data-target="#exampleModal">
+			Capture User Photo
+		</button>
+		
+		<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Capture User Photo</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+            <div class="col-md-6">
+                <div id="my_camera"></div>
+            </div>
+            <div class="col-md-6">
+                <div id="results">Your captured image will appear here...</div>
+            </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+		<input type=button id="capture-btn" class="btn btn-secondary btn-sm" value="Take Snapshot" onClick="take_snapshot()">
+         <input type="hidden" name="image" value="<?php htmlout($photo); ?>" class="image-tag"> 
+      </div>
+         </div>
+       </div>
+       </div>	
 
          <legend>Roles:</legend>
         <?php for ($i = 0; $i < count($roles); $i++): ?>
@@ -192,6 +220,7 @@ var number;
              
           </div>
         <?php endfor; ?>
+		   </div>
          </div>
       </fieldset>
         
@@ -203,7 +232,7 @@ var number;
 
      </div>
    </form>
-                   
+            </div>      
 		</div><!-- /.showcase-right-->
                
                 <div class="clr"></div>
@@ -211,13 +240,31 @@ var number;
  </div><!-- Container -->              
         </div><!-- /#wrap -->
       <?php include '../../includes/footer.html.php'?>
-        
+        <!-- Configure a few settings and attach camera -->
+<script language="JavaScript">
+    console.log("Helloo Camera");
+	Webcam.set({
+        width: 450,
+        height: 300,
+        image_format: 'jpeg',
+        jpeg_quality: 120
+    });
+  
+    Webcam.attach( '#my_camera' );
+  
+    function take_snapshot() {
+        Webcam.snap( function(data_uri) {
+            $(".image-tag").val(data_uri);
+            document.getElementById('results').innerHTML = '<img src="'+data_uri+'"/>';
+        } );
+    }
+</script>
          <script src="../../js/ie10-viewport-bug-workaround.js"></script>
-     <!-- Optional JavaScript -->
+    <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+	<script src="../../js/popover.js"></script>
+	<script src="../../js/jquery-3.2.1.slim.min.js"></script>
+	<script src="../../js/bootstrap.min.js"></script>
     </body>
 </html>
 

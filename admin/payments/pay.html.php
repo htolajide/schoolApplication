@@ -104,7 +104,7 @@ var number;
        <form action="" method="post" >
     <tr>
 	  <td><?php htmlout($sn_count); ?></td>
-	  <td><?php htmlout($pays['payname']); ?></td>
+	  <td id="name"><?php htmlout($pays['payname']); ?></td>
        <td>&#8358;<?php htmlout(number_format($pays['amount'],2)); ?></td>
       <td><?php htmlout($pays['classname']); ?></td>
       <td> <div class="listuser">
@@ -113,7 +113,7 @@ var number;
                   echo $pays['id']; ?>">
 				<input class="btn btn-sm btn-primary" type="submit" name="action" value="Change">
 				<input class="btn btn-sm btn-success" type="submit" name="action" value="Add Another Class">
-				<input class="btn btn-sm btn-danger" type="submit" name="action" value="Delete"> 
+				<input class="btn btn-sm btn-danger" id="delete" type="submit"  value="Delete"> 
 				
             </div></td>
      
@@ -128,7 +128,35 @@ var number;
  </div><!-- Container -->              
         </div><!-- /#wrap -->
       <?php include '../../includes/footer.html.php'?>
-        
+         <script>
+		
+	//confirm Delete Button.
+	function confirmDelete(event){
+		var clickedButton = event.target;
+		var nameElements = document.querySelectorAll("td#name");
+		var user = nameElements[clickedButton.id].textContent;
+		//alert();
+		var c = confirm("Are you sure you want to delete "+user );
+		if(c == true)
+			clickedButton.setAttribute("name", "action");
+		
+    
+	}
+	function deleteConfirm() {
+		var inputElements = document.querySelectorAll("input#delete");
+		var i = 0;
+		var input, user;
+							
+    while ( i < inputElements.length ) {
+        input = inputElements[i];
+		input.setAttribute("id", i);
+        input.addEventListener("click", confirmDelete, false);
+        i += 1;
+		//alert(input);
+    }
+	}
+	deleteConfirm();
+		</script>   
         
      <script src="../../js/ie10-viewport-bug-workaround.js"></script>
     <!-- Optional JavaScript -->

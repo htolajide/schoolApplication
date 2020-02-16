@@ -1,133 +1,794 @@
-create database school;
-use school;
-CREATE TABLE users (
-	id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-	name VARCHAR(255),
-        phone VARCHAR(255),
-        address VARCHAR(255),
-        gender VARCHAR (255),
-        date DATE NOT NULL,
-	email VARCHAR(255),
-	password CHAR(32),
-	UNIQUE (email)
-) DEFAULT CHARACTER SET utf8 ENGINE=InnoDB;
+-- phpMyAdmin SQL Dump
+-- version 4.5.1
+-- http://www.phpmyadmin.net
+--
+-- Host: 127.0.0.1
+-- Generation Time: Feb 16, 2020 at 05:47 PM
+-- Server version: 10.1.19-MariaDB
+-- PHP Version: 7.0.13
 
-CREATE TABLE pay (
-	id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-	classid INT NOT NULL,
-	name VARCHAR (255),
-	amount DECIMAL(12,2),
-	deleted INT NOT NULL
-
-) DEFAULT CHARACTER SET utf8 ENGINE=InnoDB;
-
-CREATE TABLE term (
-	id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-	name VARCHAR (255)
-
-) DEFAULT CHARACTER SET utf8 ENGINE=InnoDB;
-
-CREATE TABLE class (
-	id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-	name VARCHAR (255),
-	deleted INT NOT NULL
-
-) DEFAULT CHARACTER SET utf8 ENGINE=InnoDB;
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
 
 
-CREATE TABLE session (
-	id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-	name VARCHAR (255)
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
 
-) DEFAULT CHARACTER SET utf8 ENGINE=InnoDB;
+--
+-- Database: `school`
+--
 
-CREATE TABLE student (
-       id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-       surname VARCHAR (255),
-	   firstname VARCHAR (255),
-	   othername VARCHAR (255),
-	   regnumber VARCHAR (255),
-	   parentnumber VARCHAR (255),
-	   classid INT NOT NULL,
-	   sessionid INT NOT NULL,
-       termid INT NOT NULL,
-       dob DATE NOT NULL,
-	   date DATE NOT NULL,
-	   deleted INT NOT NULL
-	
-) DEFAULT CHARACTER SET utf8 ENGINE=InnoDB; 
+-- --------------------------------------------------------
 
+--
+-- Table structure for table `attempted_logins`
+--
 
-CREATE TABLE payment (
-       id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-       studentid INT NOT NULL,
-	   regnumber VARCHAR(255),
-       payid INT NOT NULL,
-	   classid INT NOT NULL,
-       sessionid INT NOT NULL,
-       termid INT NOT NULL,
-       amount DECIMAL(12,2),
-	   paymentid VARCHAR(255),
-	   deleted INT NOT NULL,
-       date DATE NOT NULL
-  
-) DEFAULT CHARACTER SET utf8 ENGINE=InnoDB;
+CREATE TABLE `attempted_logins` (
+  `id` int(30) NOT NULL,
+  `email` varchar(150) NOT NULL,
+  `password` varchar(150) NOT NULL,
+  `succeeded` tinyint(1) NOT NULL,
+  `created_at` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Dumping data for table `attempted_logins`
+--
 
-CREATE TABLE role (
-	id VARCHAR(255) NOT NULL PRIMARY KEY,
-	description VARCHAR(255)
-) DEFAULT CHARACTER SET utf8 ENGINE=InnoDB;
+INSERT INTO `attempted_logins` (`id`, `email`, `password`, `succeeded`, `created_at`) VALUES
+(1, 'htolajide@yahoo.com', 'olajide', 1, '2020-02-16 16:03:53'),
+(2, 'htolajide@yahoo.com', 'kemilag', 0, '2020-02-16 16:04:53'),
+(3, 'htolajide@yahoo.com', 'olajide', 1, '2020-02-16 16:05:11');
 
-CREATE TABLE userrole (
-	userid INT NOT NULL,
-	roleid VARCHAR(255) NOT NULL,
-	PRIMARY KEY (userid, roleid)
-) DEFAULT CHARACTER SET utf8 ENGINE=InnoDB;
+-- --------------------------------------------------------
 
-CREATE TABLE subject (
-	id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-	name VARCHAR(255),
-	deleted INT NOT NULL
-) DEFAULT CHARACTER SET utf8 ENGINE=InnoDB;
+--
+-- Table structure for table `class`
+--
 
-CREATE TABLE studentsubject (
-	studentid INT NOT NULL,
-	regnumber VARCHAR(255),
-	subjectid INT NOT NULL,
-	sessionid INT NOT NULL,
-	termid INT NOT NULL,
-	classid INT NOT NULL,
-	test1 INT NOT NULL,
-	test2 INT NOT NULL,
-	score INT NOT NULL,
-	PRIMARY KEY (studentid, subjectid, sessionid, termid, classid)
-) DEFAULT CHARACTER SET utf8 ENGINE=InnoDB;
+CREATE TABLE `class` (
+  `id` int(11) NOT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `deleted` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-# Sample data
-# We specify the IDs so they are known when we add related entries
+--
+-- Dumping data for table `class`
+--
 
-INSERT INTO users (id, name, phone, address, gender, date, email, password) VALUES
-(1, 'Hammed Taofeek', '08035297428', 'no 5 oriire akure', 'Male', '2012-04-01','htolajide@yahoo.com', '29fb983fe703ab92c11ecb43879e5d45'
-),
-(2, 'Kareem Akeem', '08035297428', 'no 5 oriire lagos', 'Male', '2012-04-01','kareemakeem@yahoo.com',  '29fb983fe703ab92c11ecb43879e5d45'
-);#password is olajide. MD fuction is giving error here.
+INSERT INTO `class` (`id`, `name`, `deleted`) VALUES
+(1, 'Kg 1', 0),
+(2, 'kg 2', 0),
+(3, 'Primary 1', 0),
+(4, 'Primary 2', 0),
+(5, 'Primary 3', 0);
 
-INSERT INTO pay (id, classid, name, amount) VALUES
-(1,  1, 'school fees', 25000 ),
-(2, 1, 'uniform', 2500 );
+-- --------------------------------------------------------
 
+--
+-- Table structure for table `disposition`
+--
 
-INSERT INTO class (id, name) VALUES
-(1, 'Kg 1'),
-(2, 'kg 2');
+CREATE TABLE `disposition` (
+  `id` int(11) NOT NULL,
+  `title` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-INSERT INTO role (id, description) VALUES
+--
+-- Dumping data for table `disposition`
+--
+
+INSERT INTO `disposition` (`id`, `title`) VALUES
+(1, 'Attentiveness'),
+(2, 'Cooperation with others'),
+(3, 'Emotional Stability');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `expenses`
+--
+
+CREATE TABLE `expenses` (
+  `id` int(11) NOT NULL,
+  `beneficiary` varchar(255) DEFAULT NULL,
+  `purpose` varchar(255) DEFAULT NULL,
+  `amount` decimal(12,2) DEFAULT NULL,
+  `date` date NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `expenses`
+--
+
+INSERT INTO `expenses` (`id`, `beneficiary`, `purpose`, `amount`, `date`) VALUES
+(1, 'Mr Gbenga', 'Repair of school chairs', '5000.00', '2018-10-17'),
+(2, 'Mr Adamolekun', 'Supply of biro', '3000.00', '2018-10-17'),
+(3, 'Mr Ajala', 'Repair of school bus tyre', '2000.00', '2018-10-17'),
+(4, 'Baba Driver', 'Fuel', '2000.00', '2018-11-22');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `pay`
+--
+
+CREATE TABLE `pay` (
+  `id` int(11) NOT NULL,
+  `classid` int(11) NOT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `amount` decimal(12,2) DEFAULT NULL,
+  `deleted` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `pay`
+--
+
+INSERT INTO `pay` (`id`, `classid`, `name`, `amount`, `deleted`) VALUES
+(1, 1, 'Development Fees', '7500.00', 1),
+(2, 1, 'Uniform', '2500.00', 0),
+(3, 1, 'School Fees', '20000.00', 0),
+(4, 3, 'School Fees', '25000.00', 0),
+(5, 3, 'Development Fees', '8000.00', 0),
+(6, 3, 'Uniform', '2500.00', 0);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `payment`
+--
+
+CREATE TABLE `payment` (
+  `id` int(11) NOT NULL,
+  `studentid` int(11) NOT NULL,
+  `regnumber` varchar(255) NOT NULL,
+  `classid` int(11) NOT NULL,
+  `payid` int(11) NOT NULL,
+  `sessionid` int(11) NOT NULL,
+  `termid` int(11) NOT NULL,
+  `amount` decimal(12,2) DEFAULT NULL,
+  `paymentid` varchar(255) NOT NULL,
+  `date` date NOT NULL,
+  `deleted` int(11) NOT NULL,
+  `corrected` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `payment`
+--
+
+INSERT INTO `payment` (`id`, `studentid`, `regnumber`, `classid`, `payid`, `sessionid`, `termid`, `amount`, `paymentid`, `date`, `deleted`, `corrected`) VALUES
+(45, 10, 'CA/2018/01', 3, 5, 3, 1, '5000.00', 'vkoalklhvuiubvdn1akonmh0c2', '2018-10-17', 0, 0),
+(46, 10, 'CA/2018/01', 3, 4, 3, 1, '15000.00', 'vkoalklhvuiubvdn1akonmh0c2', '2018-10-17', 0, 0),
+(47, 10, 'CA/2018/01', 3, 6, 3, 1, '1000.00', 'vkoalklhvuiubvdn1akonmh0c2', '2018-10-17', 0, 0),
+(48, 11, 'CA/2018/02', 3, 5, 3, 1, '3000.00', 's49jshrvqecvaphquq4sjn80f4', '2018-10-17', 0, 0),
+(49, 11, 'CA/2018/02', 3, 4, 3, 1, '15000.00', 's49jshrvqecvaphquq4sjn80f4', '2018-10-17', 0, 1),
+(50, 11, 'CA/2018/02', 3, 6, 3, 1, '2000.00', 's49jshrvqecvaphquq4sjn80f4', '2018-10-17', 0, 0),
+(51, 10, 'CA/2018/01', 3, 4, 3, 1, '5000.00', 'aep8e6u9i94k9td9et74b3m8m4', '2018-10-17', 1, 0),
+(52, 10, 'CA/2018/01', 3, 4, 3, 1, '5000.00', 'ntaqlou1p3dgc83n051224ait2', '2018-11-22', 0, 0),
+(53, 2, 'CA/2018/01', 1, 3, 1, 1, '10000.00', 'je6lbue5o1rb0kpb818rj1iep2', '2020-02-16', 0, 0),
+(54, 2, 'CA/2018/01', 1, 2, 1, 1, '1500.00', '89kckd8afcjdl3ktch35odn2e6', '2020-02-16', 0, 0),
+(55, 2, 'CA/2018/01', 1, 3, 1, 1, '10000.00', 'kbuqfl8dervr4sn09kv2krmsj6', '2020-02-16', 0, 0),
+(56, 2, 'CA/2018/01', 1, 2, 1, 1, '1000.00', 'kbuqfl8dervr4sn09kv2krmsj6', '2020-02-16', 0, 0);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `role`
+--
+
+CREATE TABLE `role` (
+  `id` varchar(255) NOT NULL,
+  `description` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `role`
+--
+
+INSERT INTO `role` (`id`, `description`) VALUES
 ('Admin Officer', 'Add, Remove, and Update User Information'),
 ('Class Teacher', 'Add, Remove and Update Student Information'),
 ('Secretary', 'Add, Remove, and Update Payments');
 
-INSERT INTO userrole (userid, roleid) VALUES
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `session`
+--
+
+CREATE TABLE `session` (
+  `id` int(11) NOT NULL,
+  `name` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `session`
+--
+
+INSERT INTO `session` (`id`, `name`) VALUES
+(1, '2018/2019'),
+(2, '2019/2020'),
+(3, '2020/2021'),
+(4, '2021/2022');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `skill`
+--
+
+CREATE TABLE `skill` (
+  `id` int(11) NOT NULL,
+  `title` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `skill`
+--
+
+INSERT INTO `skill` (`id`, `title`) VALUES
+(1, 'Drawing and Painting'),
+(2, 'Handling Tools'),
+(3, 'Games');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `student`
+--
+
+CREATE TABLE `student` (
+  `id` int(11) NOT NULL,
+  `surname` varchar(255) DEFAULT NULL,
+  `firstname` varchar(255) DEFAULT NULL,
+  `othername` varchar(255) DEFAULT NULL,
+  `regnumber` varchar(255) DEFAULT NULL,
+  `gender` varchar(255) DEFAULT NULL,
+  `parentphone` varchar(255) DEFAULT NULL,
+  `classid` int(11) NOT NULL,
+  `sessionid` int(11) NOT NULL,
+  `termid` int(11) NOT NULL,
+  `dob` date NOT NULL,
+  `date` date NOT NULL,
+  `image` varchar(255) NOT NULL,
+  `deleted` int(11) NOT NULL,
+  `corrected` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `student`
+--
+
+INSERT INTO `student` (`id`, `surname`, `firstname`, `othername`, `regnumber`, `gender`, `parentphone`, `classid`, `sessionid`, `termid`, `dob`, `date`, `image`, `deleted`, `corrected`) VALUES
+(2, 'Hammed', 'Hamidat', 'Anike', 'CA/2018/01', 'Female', '08034567890', 1, 1, 1, '2018-06-26', '2018-09-13', 'upload/5d77c069e9220.png', 0, 0),
+(3, 'Hammed', 'Taofeek', 'Olajide', 'CA/2018/02', 'Male', '08035297428', 1, 1, 1, '1996-06-26', '2018-09-13', 'upload/5cbf2342982a3.png', 0, 0),
+(4, 'Hammed', 'Hamidat', 'Anike', 'CA/2018/01', 'Female', '08034567890', 1, 1, 2, '2018-06-26', '2018-09-13', '', 0, 0),
+(5, 'Hammed', 'Taofeek', 'Olajide', 'CA/2018/02', 'Male', '08035297428', 1, 1, 2, '1996-06-26', '2018-09-16', '', 0, 0),
+(6, 'Hammed', 'Hamidat', 'Anike', 'CA/2018/01', 'Female', '08034567890', 1, 1, 3, '2018-06-26', '2018-09-13', 'upload/5d77c85a94b95.png', 0, 0),
+(7, 'Hammed', 'Taofeek', 'Olajide', 'CA/2018/02', 'Male', '08035297428', 1, 1, 3, '1996-06-26', '2018-09-14', 'upload/5d78066ac0116.png', 0, 0),
+(8, 'Hammed', 'Hamidat', 'Anike', 'CA/2018/01', 'Female', '08034567890', 2, 2, 1, '2018-06-26', '2018-09-14', 'upload/5e48078415f2c.png', 0, 0),
+(9, 'Hammed', 'Taofeek', 'Olajide', 'CA/2018/02', 'Male', '08035297428', 2, 2, 1, '1996-06-26', '2018-09-14', 'upload/5e4808371616f.png', 0, 0),
+(10, 'Hammed', 'Hamidat', 'Anike', 'CA/2018/01', 'Female', '08034567890', 3, 3, 1, '2018-06-26', '2018-10-08', '', 0, 0),
+(11, 'Hammed', 'Taofeek', 'Olajide', 'CA/2018/02', 'Male', '08035297428', 3, 3, 1, '1996-06-26', '2018-10-10', '', 0, 0),
+(12, 'Hammed', 'Hamidat', 'Anike', 'CA/2018/01', 'Female', '08034567890', 4, 3, 1, '2018-06-26', '2018-10-17', '', 0, 0),
+(13, 'HAMMED', 'Akeem', 'Amoo', 'CA/2018/003', 'Male', '8035297428', 1, 1, 1, '1989-05-20', '2019-04-20', 'upload/5cbdfbcf3bcac.png', 0, 0),
+(17, 'HAMMED', 'Akeem', 'Amoo', 'CA/2018/003', 'Male', '8035297428', 1, 1, 2, '1989-05-20', '2019-09-10', 'upload/5cbdfbcf3bcac.png', 0, 0),
+(18, 'HAMMED', 'Akeem', 'Amoo', 'CA/2018/003', 'Male', '8035297428', 1, 1, 3, '1989-05-20', '2019-09-10', 'upload/5cbdfbcf3bcac.png', 0, 0);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `studentdisposition`
+--
+
+CREATE TABLE `studentdisposition` (
+  `id` int(11) NOT NULL,
+  `studentid` int(11) NOT NULL,
+  `dispositionid` int(11) NOT NULL,
+  `grade` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `studentdisposition`
+--
+
+INSERT INTO `studentdisposition` (`id`, `studentid`, `dispositionid`, `grade`) VALUES
+(4, 3, 1, 3),
+(5, 3, 2, 1),
+(6, 3, 3, 2),
+(7, 13, 1, 1),
+(8, 13, 2, 1),
+(9, 13, 3, 1),
+(22, 7, 1, 2),
+(23, 7, 2, 2),
+(24, 7, 3, 3),
+(25, 4, 1, 1),
+(26, 4, 2, 2),
+(27, 4, 3, 3),
+(28, 5, 1, 1),
+(29, 5, 2, 2),
+(30, 5, 3, 3),
+(31, 17, 1, 1),
+(32, 17, 2, 2),
+(33, 17, 3, 3),
+(34, 6, 1, 2),
+(35, 6, 2, 1),
+(36, 6, 3, 2),
+(43, 2, 1, 1),
+(44, 2, 2, 2),
+(45, 2, 3, 3),
+(46, 8, 1, 1),
+(47, 8, 2, 2),
+(48, 8, 3, 3),
+(49, 9, 1, 1),
+(50, 9, 2, 2),
+(51, 9, 3, 3);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `studentskill`
+--
+
+CREATE TABLE `studentskill` (
+  `id` int(11) NOT NULL,
+  `studentid` int(11) NOT NULL,
+  `skillid` int(11) NOT NULL,
+  `grade` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `studentskill`
+--
+
+INSERT INTO `studentskill` (`id`, `studentid`, `skillid`, `grade`) VALUES
+(4, 3, 1, 3),
+(5, 3, 2, 1),
+(6, 3, 3, 2),
+(7, 13, 1, 1),
+(8, 13, 2, 1),
+(9, 13, 3, 1),
+(22, 7, 1, 2),
+(23, 7, 2, 2),
+(24, 7, 3, 3),
+(25, 4, 1, 1),
+(26, 4, 2, 2),
+(27, 4, 3, 3),
+(28, 5, 1, 1),
+(29, 5, 2, 2),
+(30, 5, 3, 3),
+(31, 17, 1, 1),
+(32, 17, 2, 2),
+(33, 17, 3, 3),
+(34, 6, 1, 2),
+(35, 6, 2, 1),
+(36, 6, 3, 2),
+(43, 2, 1, 1),
+(44, 2, 2, 2),
+(45, 2, 3, 3),
+(46, 8, 1, 1),
+(47, 8, 2, 2),
+(48, 8, 3, 3),
+(49, 9, 1, 1),
+(50, 9, 2, 2),
+(51, 9, 3, 3);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `studentsubject`
+--
+
+CREATE TABLE `studentsubject` (
+  `studentid` int(11) NOT NULL,
+  `regnumber` varchar(255) NOT NULL,
+  `subjectid` int(11) NOT NULL,
+  `sessionid` int(11) NOT NULL,
+  `termid` int(11) NOT NULL,
+  `classid` int(11) NOT NULL,
+  `test1` int(11) NOT NULL,
+  `test2` int(11) NOT NULL,
+  `score` int(11) NOT NULL,
+  `date` date NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `studentsubject`
+--
+
+INSERT INTO `studentsubject` (`studentid`, `regnumber`, `subjectid`, `sessionid`, `termid`, `classid`, `test1`, `test2`, `score`, `date`) VALUES
+(2, 'CA/2018/01', 1, 1, 1, 1, 12, 8, 50, '2019-11-06'),
+(2, 'CA/2018/01', 2, 1, 1, 1, 12, 8, 50, '2019-11-06'),
+(2, 'CA/2018/01', 3, 1, 1, 1, 12, 8, 50, '2019-11-06'),
+(2, 'CA/2018/01', 4, 1, 1, 1, 12, 8, 50, '2019-11-06'),
+(2, 'CA/2018/01', 6, 1, 1, 1, 12, 8, 50, '2019-11-06'),
+(2, 'CA/2018/01', 7, 1, 1, 1, 12, 8, 50, '2019-11-06'),
+(3, 'CA/2018/02', 1, 1, 1, 1, 12, 8, 50, '2019-09-07'),
+(3, 'CA/2018/02', 2, 1, 1, 1, 12, 8, 50, '2019-09-07'),
+(3, 'CA/2018/02', 3, 1, 1, 1, 12, 8, 50, '2019-09-07'),
+(3, 'CA/2018/02', 4, 1, 1, 1, 12, 8, 50, '2019-09-07'),
+(3, 'CA/2018/02', 6, 1, 1, 1, 12, 8, 50, '2019-09-07'),
+(3, 'CA/2018/02', 7, 1, 1, 1, 12, 8, 50, '2019-09-07'),
+(4, 'CA/2018/01', 1, 1, 2, 1, 10, 12, 55, '2018-10-10'),
+(4, 'CA/2018/01', 2, 1, 2, 1, 12, 10, 70, '2018-10-10'),
+(4, 'CA/2018/01', 3, 1, 2, 1, 5, 10, 50, '2018-10-10'),
+(4, 'CA/2018/01', 4, 1, 2, 1, 8, 12, 45, '2018-10-10'),
+(4, 'CA/2018/01', 6, 1, 2, 1, 10, 15, 60, '2018-10-10'),
+(5, 'CA/2018/02', 1, 1, 2, 1, 8, 10, 40, '2018-10-10'),
+(5, 'CA/2018/02', 2, 1, 2, 1, 7, 8, 48, '2018-10-10'),
+(5, 'CA/2018/02', 3, 1, 2, 1, 12, 8, 30, '2018-10-10'),
+(5, 'CA/2018/02', 4, 1, 2, 1, 10, 8, 42, '2018-10-10'),
+(5, 'CA/2018/02', 6, 1, 2, 1, 5, 10, 35, '2018-10-10'),
+(6, 'CA/2018/01', 1, 1, 3, 1, 12, 5, 40, '2019-09-10'),
+(6, 'CA/2018/01', 2, 1, 3, 1, 12, 8, 45, '2019-09-10'),
+(6, 'CA/2018/01', 3, 1, 3, 1, 10, 5, 35, '2019-09-10'),
+(6, 'CA/2018/01', 4, 1, 3, 1, 10, 5, 42, '2019-09-10'),
+(6, 'CA/2018/01', 6, 1, 3, 1, 8, 12, 30, '2019-09-10'),
+(6, 'CA/2018/01', 7, 1, 3, 1, 12, 8, 50, '2019-09-10'),
+(7, 'CA/2018/02', 1, 1, 3, 1, 8, 12, 25, '2019-09-10'),
+(7, 'CA/2018/02', 2, 1, 3, 1, 5, 8, 50, '2019-09-10'),
+(7, 'CA/2018/02', 3, 1, 3, 1, 12, 10, 30, '2019-09-10'),
+(7, 'CA/2018/02', 4, 1, 3, 1, 7, 8, 52, '2019-09-10'),
+(7, 'CA/2018/02', 6, 1, 3, 1, 10, 10, 35, '2019-09-10'),
+(7, 'CA/2018/02', 7, 1, 3, 1, 0, 0, 0, '2019-09-10'),
+(8, 'CA/2018/01', 1, 2, 1, 2, 12, 5, 30, '2020-02-15'),
+(8, 'CA/2018/01', 2, 2, 1, 2, 10, 8, 32, '2020-02-15'),
+(8, 'CA/2018/01', 3, 2, 1, 2, 8, 12, 40, '2020-02-15'),
+(8, 'CA/2018/01', 4, 2, 1, 2, 15, 10, 50, '2020-02-15'),
+(8, 'CA/2018/01', 6, 2, 1, 2, 0, 0, 0, '2020-02-15'),
+(9, 'CA/2018/02', 1, 2, 1, 2, 0, 0, 0, '2020-02-15'),
+(9, 'CA/2018/02', 2, 2, 1, 2, 0, 0, 0, '2020-02-15'),
+(9, 'CA/2018/02', 3, 2, 1, 2, 0, 0, 0, '2020-02-15'),
+(9, 'CA/2018/02', 4, 2, 1, 2, 0, 0, 0, '2020-02-15'),
+(9, 'CA/2018/02', 6, 2, 1, 2, 0, 0, 0, '2020-02-15'),
+(9, 'CA/2018/02', 7, 2, 1, 2, 0, 0, 0, '2020-02-15'),
+(9, 'CA/2018/02', 8, 2, 1, 2, 0, 0, 0, '2020-02-15'),
+(10, 'CA/2018/01', 1, 3, 1, 3, 0, 0, 0, '2018-11-07'),
+(10, 'CA/2018/01', 2, 3, 1, 3, 0, 0, 0, '2018-11-07'),
+(10, 'CA/2018/01', 3, 3, 1, 3, 12, 8, 45, '2018-11-07'),
+(10, 'CA/2018/01', 4, 3, 1, 3, 0, 0, 0, '2018-11-07'),
+(10, 'CA/2018/01', 6, 3, 1, 3, 0, 0, 0, '2018-11-07'),
+(10, 'CA/2018/01', 7, 3, 1, 3, 0, 0, 0, '2018-11-07'),
+(11, 'CA/2018/02', 1, 3, 1, 3, 0, 0, 0, '0000-00-00'),
+(11, 'CA/2018/02', 2, 3, 1, 3, 0, 0, 0, '0000-00-00'),
+(11, 'CA/2018/02', 3, 3, 1, 3, 0, 0, 0, '0000-00-00'),
+(11, 'CA/2018/02', 4, 3, 1, 3, 0, 0, 0, '0000-00-00'),
+(11, 'CA/2018/02', 6, 3, 1, 3, 0, 0, 0, '0000-00-00'),
+(12, 'CA/2018/01', 1, 3, 1, 4, 0, 0, 0, '0000-00-00'),
+(12, 'CA/2018/01', 2, 3, 1, 4, 0, 0, 0, '0000-00-00'),
+(12, 'CA/2018/01', 3, 3, 1, 4, 0, 0, 0, '0000-00-00'),
+(12, 'CA/2018/01', 4, 3, 1, 4, 0, 0, 0, '0000-00-00'),
+(12, 'CA/2018/01', 6, 3, 1, 4, 0, 0, 0, '0000-00-00'),
+(13, 'CA/2018/003', 1, 1, 1, 1, 12, 8, 50, '2019-09-08'),
+(13, 'CA/2018/003', 2, 1, 1, 1, 10, 12, 40, '2019-09-08'),
+(13, 'CA/2018/003', 3, 1, 1, 1, 12, 8, 45, '2019-09-08'),
+(13, 'CA/2018/003', 4, 1, 1, 1, 10, 8, 45, '2019-09-08'),
+(13, 'CA/2018/003', 6, 1, 1, 1, 15, 5, 50, '2019-09-08'),
+(13, 'CA/2018/003', 7, 1, 1, 1, 14, 10, 45, '2019-09-08'),
+(14, 'CA/2018/003', 1, 1, 2, 1, 0, 0, 0, '0000-00-00'),
+(14, 'CA/2018/01', 1, 4, 1, 5, 0, 0, 0, '0000-00-00'),
+(14, 'CA/2018/003', 2, 1, 2, 1, 0, 0, 0, '0000-00-00'),
+(14, 'CA/2018/01', 2, 4, 1, 5, 0, 0, 0, '0000-00-00'),
+(14, 'CA/2018/003', 3, 1, 2, 1, 0, 0, 0, '0000-00-00'),
+(14, 'CA/2018/01', 3, 4, 1, 5, 0, 0, 0, '0000-00-00'),
+(14, 'CA/2018/003', 4, 1, 2, 1, 0, 0, 0, '0000-00-00'),
+(14, 'CA/2018/01', 4, 4, 1, 5, 0, 0, 0, '0000-00-00'),
+(14, 'CA/2018/003', 6, 1, 2, 1, 0, 0, 0, '0000-00-00'),
+(14, 'CA/2018/01', 6, 4, 1, 5, 0, 0, 0, '0000-00-00'),
+(14, 'CA/2018/003', 7, 1, 2, 1, 0, 0, 0, '0000-00-00'),
+(14, 'CA/2018/01', 7, 4, 1, 5, 0, 0, 0, '0000-00-00'),
+(15, 'CA/2018/003', 1, 1, 2, 1, 0, 0, 0, '0000-00-00'),
+(15, 'CA/2018/003', 2, 1, 2, 1, 0, 0, 0, '0000-00-00'),
+(15, 'CA/2018/003', 3, 1, 2, 1, 0, 0, 0, '0000-00-00'),
+(15, 'CA/2018/003', 4, 1, 2, 1, 0, 0, 0, '0000-00-00'),
+(15, 'CA/2018/003', 6, 1, 2, 1, 0, 0, 0, '0000-00-00'),
+(15, 'CA/2018/003', 7, 1, 2, 1, 0, 0, 0, '0000-00-00'),
+(16, 'CA/2018/003', 1, 1, 2, 1, 0, 0, 0, '0000-00-00'),
+(16, 'CA/2018/003', 2, 1, 2, 1, 0, 0, 0, '0000-00-00'),
+(16, 'CA/2018/003', 3, 1, 2, 1, 0, 0, 0, '0000-00-00'),
+(16, 'CA/2018/003', 4, 1, 2, 1, 0, 0, 0, '0000-00-00'),
+(16, 'CA/2018/003', 6, 1, 2, 1, 0, 0, 0, '0000-00-00'),
+(16, 'CA/2018/003', 7, 1, 2, 1, 0, 0, 0, '0000-00-00'),
+(17, 'CA/2018/003', 1, 1, 2, 1, 0, 0, 0, '0000-00-00'),
+(17, 'CA/2018/003', 2, 1, 2, 1, 0, 0, 0, '0000-00-00'),
+(17, 'CA/2018/003', 3, 1, 2, 1, 0, 0, 0, '0000-00-00'),
+(17, 'CA/2018/003', 4, 1, 2, 1, 0, 0, 0, '0000-00-00'),
+(17, 'CA/2018/003', 6, 1, 2, 1, 0, 0, 0, '0000-00-00'),
+(17, 'CA/2018/003', 7, 1, 2, 1, 0, 0, 0, '0000-00-00'),
+(18, 'CA/2018/003', 1, 1, 3, 1, 0, 0, 0, '0000-00-00'),
+(18, 'CA/2018/003', 2, 1, 3, 1, 0, 0, 0, '0000-00-00'),
+(18, 'CA/2018/003', 3, 1, 3, 1, 0, 0, 0, '0000-00-00'),
+(18, 'CA/2018/003', 4, 1, 3, 1, 0, 0, 0, '0000-00-00'),
+(18, 'CA/2018/003', 6, 1, 3, 1, 0, 0, 0, '0000-00-00'),
+(18, 'CA/2018/003', 7, 1, 3, 1, 0, 0, 0, '0000-00-00');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `subject`
+--
+
+CREATE TABLE `subject` (
+  `id` int(11) NOT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `deleted` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `subject`
+--
+
+INSERT INTO `subject` (`id`, `name`, `deleted`) VALUES
+(1, 'English Language', 0),
+(2, 'Mathematics', 0),
+(3, 'Basic Science', 0),
+(4, 'Yoruba', 0),
+(6, 'French', 0),
+(7, 'Computer Science', 0),
+(8, 'Social Studies', 0);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `term`
+--
+
+CREATE TABLE `term` (
+  `id` int(11) NOT NULL,
+  `name` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `term`
+--
+
+INSERT INTO `term` (`id`, `name`) VALUES
+(1, 'First Term'),
+(2, 'Second Term'),
+(3, 'Third Term');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `userrole`
+--
+
+CREATE TABLE `userrole` (
+  `userid` int(11) NOT NULL,
+  `roleid` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `userrole`
+--
+
+INSERT INTO `userrole` (`userid`, `roleid`) VALUES
 (1, 'Admin Officer'),
 (1, 'Class Teacher'),
-(1, 'Secretary');
+(1, 'Secretary'),
+(2, 'Class Teacher'),
+(2, 'Secretary'),
+(3, 'Secretary'),
+(4, 'Class Teacher'),
+(5, 'Class Teacher');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `users`
+--
+
+CREATE TABLE `users` (
+  `id` int(11) NOT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `phone` varchar(255) DEFAULT NULL,
+  `address` varchar(255) DEFAULT NULL,
+  `gender` varchar(255) DEFAULT NULL,
+  `date` date NOT NULL,
+  `email` varchar(255) DEFAULT NULL,
+  `photo` varchar(255) NOT NULL,
+  `password` char(32) DEFAULT NULL,
+  `deleted` int(11) NOT NULL,
+  `classid` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `users`
+--
+
+INSERT INTO `users` (`id`, `name`, `phone`, `address`, `gender`, `date`, `email`, `photo`, `password`, `deleted`, `classid`) VALUES
+(1, 'Hammed Taofeek', '08035297428', 'No 5 Oriire Akure', 'Male', '2012-04-01', 'htolajide@yahoo.com', 'upload/5de7c8517b27a.png', '6f3ce7bc7aeccf1e1fcfc93763d91416', 0, 1),
+(2, 'Kareem Akeem', '08035297428', 'No 5 Oriire Lagos', 'Male', '2012-04-01', 'kareemakeem@yahoo.com', 'upload/5d580f440c12a.png', 'f47fda17ce8b377bc256383354087413', 0, 1),
+(3, 'Omotosho Ademola', '08034567890', 'Oke Aro Lagos', 'Male', '2018-09-06', 'omotee@yahoo.com', 'upload/5cc043105859c.png', 'a7753b29c4ca4ee18932cb159824fe53', 0, 0),
+(4, 'Musibau Nimot', '08034567890', 'Oriire House Lagos', 'Female', '2018-09-06', 'musibaunimota@yahoo.com', 'upload/5cc0434e3beb0.png', 'dbd3d63cb1b23b518a7ee0ec72fda888', 1, 2),
+(5, 'Biodun adeoye', '08034567890', 'Iseyin lagos', 'Male', '2018-09-06', 'biodunadeoye@yahoo.com', 'upload/5cc6c224aa666.png', '2b1498bd2db3da64d2497ba07ad72e86', 0, 1);
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `attempted_logins`
+--
+ALTER TABLE `attempted_logins`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `class`
+--
+ALTER TABLE `class`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `disposition`
+--
+ALTER TABLE `disposition`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `expenses`
+--
+ALTER TABLE `expenses`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `pay`
+--
+ALTER TABLE `pay`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `payment`
+--
+ALTER TABLE `payment`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `role`
+--
+ALTER TABLE `role`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `session`
+--
+ALTER TABLE `session`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `skill`
+--
+ALTER TABLE `skill`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `student`
+--
+ALTER TABLE `student`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `studentdisposition`
+--
+ALTER TABLE `studentdisposition`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `studentskill`
+--
+ALTER TABLE `studentskill`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `studentsubject`
+--
+ALTER TABLE `studentsubject`
+  ADD PRIMARY KEY (`studentid`,`subjectid`,`sessionid`,`termid`,`classid`);
+
+--
+-- Indexes for table `subject`
+--
+ALTER TABLE `subject`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `term`
+--
+ALTER TABLE `term`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `userrole`
+--
+ALTER TABLE `userrole`
+  ADD PRIMARY KEY (`userid`,`roleid`);
+
+--
+-- Indexes for table `users`
+--
+ALTER TABLE `users`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `email` (`email`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `attempted_logins`
+--
+ALTER TABLE `attempted_logins`
+  MODIFY `id` int(30) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+--
+-- AUTO_INCREMENT for table `class`
+--
+ALTER TABLE `class`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+--
+-- AUTO_INCREMENT for table `disposition`
+--
+ALTER TABLE `disposition`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+--
+-- AUTO_INCREMENT for table `expenses`
+--
+ALTER TABLE `expenses`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+--
+-- AUTO_INCREMENT for table `pay`
+--
+ALTER TABLE `pay`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+--
+-- AUTO_INCREMENT for table `payment`
+--
+ALTER TABLE `payment`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=57;
+--
+-- AUTO_INCREMENT for table `session`
+--
+ALTER TABLE `session`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+--
+-- AUTO_INCREMENT for table `skill`
+--
+ALTER TABLE `skill`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+--
+-- AUTO_INCREMENT for table `student`
+--
+ALTER TABLE `student`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+--
+-- AUTO_INCREMENT for table `studentdisposition`
+--
+ALTER TABLE `studentdisposition`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=52;
+--
+-- AUTO_INCREMENT for table `studentskill`
+--
+ALTER TABLE `studentskill`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=52;
+--
+-- AUTO_INCREMENT for table `subject`
+--
+ALTER TABLE `subject`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+--
+-- AUTO_INCREMENT for table `term`
+--
+ALTER TABLE `term`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+--
+-- AUTO_INCREMENT for table `users`
+--
+ALTER TABLE `users`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

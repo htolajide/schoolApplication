@@ -1,62 +1,102 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>This site is Under Construction. Powered by GlobalHosting247.com</title>
-<link href="tools/style.css" rel="stylesheet" type="text/css" media="screen" />
-<link href="tools/font-awesome/css/font-awesome.css" type="text/css" rel="stylesheet">
-<script type="text/javascript" src="tools/jquery.min.js"></script> 
-<link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
-<link href="https://file.myfontastic.com/n6vo44Re5QaWo8oCKShBs7/icons.css" rel="stylesheet">
-<meta name="viewport" content="width=device-width, initial-scale = 1.0, user-scalable = no">
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Comrade Homepage</title>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width" />
+        <link rel="stylesheet" href="css/reset.css" type="text/css" />
+        <link rel="stylesheet" href="css/style.css" type="text/css" />
+        <script src="js/jquery.js"></script> 
+         <link rel="icon" href="images/favicon.ico">
+    </head>
+    <body>
+        <div id="wrap">
+            <div id="screen_width"></div>
+            <header class="main-header">
+                <div class="container">
+                   <div class="logo">
+  <script language="JavaScript1.2">                   
+  
+var myimages=new Array();
+var delay = 500;
+var number;
 
+  myimages[1]="images/verologo00.png";
+  myimages[2]="images/verologo01.png";
+  myimages[3]="images/verologo02.png";
+ 
+  number=1;
+     
+  function animate(){
+      
+   
+   for(i=1; i<3; i++){ document.image_rotate.src = myimages[number];
+     number++;
+     if (number > 3) number=1;
+   }
+    
+}
 
-</head>
-<body>
-<div class="transy"></div>
-<div class="wrapper">
-	<div class="centered">
-		<div class="header">
-			<h1 id="logo">Powered By</h1>
-			<p class="line1"><a href="https://www.globalhosting247.com"><img src="https://www.globalhosting247.com/logo.png" alt="web hosting in Nigeria as low as ₦2250/year, Free setup, 99$ uptime guaranteed and more"></a></p>
-		</div>
-		
-		<div class="content">
-				<p>Oops! This Website is Under Construction, please check back soon.</p>
-		</div>
-		
-		
-		
-
-		
-		<div class="form">
-		<br /><br /><br /><br />
-			<p><a href="https://www.globalhosting247.com"><font color="yellow"><u>Reliable & Affordable Web hosting in Nigeria as low as ₦2250/year</u></font></a></p>
-							
-			</div>
-		</div>
-		
-		
-		
-		
-	</div>
-</div>
-
-	
-	
-		<script type="text/javascript">
-var placeholder = $("#test").val();
-
-$("#test").keydown(function() {
-    if (this.value == placeholder) {
-        this.value = '';
-    }
-}).blur(function() {
-    if (this.value == '') {
-        this.value = placeholder;
-    }
-});
 </script>
+     
+          
+                
+             <img name="image_rotate" src="images/verologo00.png" onLoad="setTimeout('animate()', delay);" alt="verologo" />
+                    </div><!-- /.logo -->   
+                    <nav class="main-nav">
+                        <ul>
+                            <li><a class="active" href="index.php">Home</a></li>
+                            <li><a href="admin">Admin</a></li>
+                          <li><a href="contact.php">Contact</a></li>
+                        </ul>
+                    </nav>
+                </div><!-- /.container-->
+            </header> 
+            <div id="showcase">
+                <div class="container">
+                    <div class="showcase-right">
+                        
+                    </div><!-- /.showcase-right-->
+                    <div style="color:#000000"class="showcase-left">
+                        <h3>Your long search for a perfect school for your wards stop here</h3>
+                        <p>Comrade academy is day and boarding school established for excellence . We are poised to receive your wards and give the much required trainning both academic and morally for them to became the crop leader that we can be proud of. We strongly believe that ‘education is life’ which quaranteed the growth and development of our great nation. </p>
+                        <br />
+                        <a href="#"><img src="images/readmore.png" alt="Rad More" /></a>
+                    </div><!-- /.showcase-left-->
+                </div><!-- /.container-->
+            </div><!-- /#showcase -->
+            <div class="container">
+                <div class="box3">
+                    <img src="images/student.png" alt="Day School" />
+                    <h3>Day School</h3>
+                    <p>Day school is available for all category of classes</p>
+                </div><!-- /.box3-->
+                 <div class="box3">
+                    <img src="images/hostel.png" alt="Hostel Accomodation" />
+                    <h3>Hostel Accommodation</h3>
+                    <p>Standard hostel accommodation is available for all category of students</p>
+                </div><!-- /.box3-->
+                 <div class="box3">
+                    <img src="images/holiday.png" alt="Holiday Coachin" />
+                    <h3>Holiday Coaching</h3>
+                    <p>We also organise holiday coaching for all classes during holidays</p>
+                </div><!-- /.box3-->
+                <div class="clr"></div>
+                <div id="content">
+                    
+                </div><!-- /.content -->
+               
+                <div class="clr"></div>
+            </div><!-- /.container-->                
+        </div><!-- /#wrap -->
+        <?php
 
-</body>
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+?>
+          <?php include 'includes/footer.html.php'?>
+    </body>
 </html>
+© 2020 GitHub, Inc.
